@@ -2,7 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_airplane_game/theme/theme_controller.dart';
+import 'aircraft/default_combat_aircraft.dart';
+import 'auto_sprite.dart';
 import 'award/award.dart';
+import 'award/default_award.dart';
 import 'enemy/big_enemy_plane.dart';
 import 'explosion/explosion.dart';
 import 'enemy/small_enemy_plane.dart';
@@ -11,26 +14,22 @@ import 'bullet/bullet.dart';
 import 'aircraft/combat_aircraft.dart';
 import 'enemy/enemy_plane.dart';
 import 'enemy/middle_enemy_plane.dart';
-import 'sprite.dart';
 
 class Game {
   final ThemeController themeController;
   Game(this.themeController);
 
   ///角色飞机
-  late final CombatAircraft _combatAircraft = CombatAircraft(themeController: themeController);
+  late final CombatAircraft _combatAircraft = DefaultCombatAircraft(themeController: themeController);
 
   ///子弹
   final _bullets = <Bullet>[];
 
-  ///敌人
-  final _enemies = <EnemyPlane>[];
+  ///敌人或奖品
+  final _enemiesOrAwards = <AutoSprite>[];
 
   ///爆炸效果
   final _explosions = <Explosion>[];
-
-  ///奖励
-  final _awards = <Award>[];
 
   ///尺寸
   var size = const Size(0, 0);
@@ -50,23 +49,25 @@ class Game {
   ///得分
   int score = 0;
 
+  ///游戏等级
+  int level = 2;
+
   ///开始游戏
   void startGame() {
     score = 0;
     pause = false;
     _gameOver = false;
-    _combatAircraft.destroyed = false;
-    _combatAircraft.single = true;
+    _combatAircraft.reset();
     _combatAircraft.moveTo((size.width - _combatAircraft.getSize().width) / 2, size.height - _combatAircraft.getSize().height);
-    _enemies.clear();
+    _enemiesOrAwards.clear();
     _explosions.clear();
     _bullets.clear();
-    _enemies.add(MiddleEnemyPlane(themeController: themeController));
+    _enemiesOrAwards.add(MiddleEnemyPlane(themeController: themeController));
   }
 
   ///停止游戏
   void stopGame() {
-    _enemies.clear();
+    _enemiesOrAwards.clear();
     _explosions.clear();
     _bullets.clear();
   }
@@ -100,11 +101,12 @@ class Game {
 
   ///更新页面
   void _updateWorld() {
+    level = score.toString().length;
     //更新飞机
-    _combatAircraft.update();
+    _combatAircraft.update(size);
     //更新敌人
-    for (var enemyPlane in _enemies) {
-      enemyPlane.update();
+    for (var enemyPlane in _enemiesOrAwards) {
+      enemyPlane.update(size);
     }
     //更新子弹
     var list = _combatAircraft.getBullets();
@@ -112,58 +114,54 @@ class Game {
       _bullets.addAll(list);
     }
     //碰撞检测
-    for (int i = 0; i < _enemies.length; i++) {
-      EnemyPlane enemyPlane = _enemies[i];
-      if (enemyPlane.destroyed || isOutScreen(enemyPlane)) {
-        _enemies.removeAt(i);
+    for (int i = 0; i < _enemiesOrAwards.length; i++) {
+      AutoSprite enemiesOrAward = _enemiesOrAwards[i];
+      //已经销毁了则移除
+      if (enemiesOrAward.destroyed || enemiesOrAward.isOutScreen(size)) {
+        _enemiesOrAwards.removeAt(i);
         i--;
         continue;
       }
+
+      ///检测子弹与敌人的
       for (int j = 0; j < _bullets.length; j++) {
         Bullet bullet = _bullets[j];
-        if (enemyPlane.isCollide(bullet)) {
-          enemyPlane.attacked(1, this);
+        if (enemiesOrAward is EnemyPlane && enemiesOrAward.isCollide(bullet)) {
+          enemiesOrAward.attacked(1, this);
           _bullets.removeAt(j);
           j--;
         }
       }
-      if (_combatAircraft.isCollide(enemyPlane)) {
-        //飞机爆炸
-        _combatAircraft.hit(this);
-        _gameOver = true;
-      }
-    }
-    //奖励
-    for (int i = 0; i < _awards.length; i++) {
-      Award award = _awards[i];
-      if (_combatAircraft.isCollide(award)) {
-        _combatAircraft.addAward();
-        _awards.removeAt(i);
-        i--;
-      } else if (isOutScreen(award)) {
-        _awards.removeAt(i);
-        i--;
-      } else {
-        award.update();
+
+      ///检测主角飞机和敌人的碰撞
+      if (_combatAircraft.isCollide(enemiesOrAward)) {
+        if (enemiesOrAward is EnemyPlane) {
+          //飞机爆炸
+          _combatAircraft.hit(this);
+          _gameOver = true;
+        } else if (enemiesOrAward is Award) {
+          //奖励
+          _combatAircraft.addAward();
+          _enemiesOrAwards.removeAt(i);
+        }
       }
     }
     //爆炸效果
     for (int i = 0; i < _explosions.length; i++) {
-      _explosions[i].update();
+      _explosions[i].update(size);
       if (_explosions[i].destroyed) {
         _explosions.removeAt(i);
         i--;
       }
     }
-    if ((flame % 600) == 0) {
-      createAward();
-    }
-    //创建敌人
-    createEnemy();
+    //创建敌人和奖品
+    _createEnemyAndAward();
+
+    ///更新子弹
     for (int i = 0; i < _bullets.length; i++) {
       Bullet bullet = _bullets[i];
-      bullet.update();
-      if (isOutScreen(bullet)) {
+      bullet.update(size);
+      if (bullet.isOutScreen(size)) {
         _bullets.removeAt(i);
         i--;
       }
@@ -171,39 +169,24 @@ class Game {
   }
 
   //创建敌人
-  createEnemy() {
-    if (_enemies.length < 3) {
-      var category = random.nextInt(3);
-      EnemyPlane? enemy;
-      if (category == 0) {
-        enemy = SmallEnemyPlane(themeController: themeController);
-      } else if (category == 1) {
-        enemy = MiddleEnemyPlane(themeController: themeController);
-      } else if (category == 2) {
-        enemy = BigEnemyPlane(themeController: themeController);
+  _createEnemyAndAward() {
+    if (_enemiesOrAwards.length < level) {
+      var category = random.nextInt(level);
+      AutoSprite? sprite;
+      if (category % 4 == 0) {
+        sprite = SmallEnemyPlane(themeController: themeController);
+      } else if (category % 4 == 1) {
+        sprite = MiddleEnemyPlane(themeController: themeController);
+      } else if (category % 4 == 2) {
+        sprite = BigEnemyPlane(themeController: themeController);
+      } else if (category % 4 == 3) {
+        sprite = DefaultAward(themeController: themeController);
       }
-      if (enemy != null) {
-        enemy.moveTo(random.nextDouble() * size.width - enemy.getSize().width / 2, -enemy.getSize().height);
-        _enemies.add(enemy);
+      if (sprite != null) {
+        sprite.moveTo(random.nextDouble() * size.width - sprite.getSize().width / 2, -sprite.getSize().height);
+        _enemiesOrAwards.add(sprite);
       }
     }
-  }
-
-  ///创建奖励
-  void createAward() {
-    Award award = Award(themeController: themeController);
-    award.moveTo(random.nextDouble() * size.width - award.getSize().width / 2, -award.getSize().height);
-    _awards.add(award);
-  }
-
-  bool isOutScreen(Sprite sprite) {
-    Rect rect1 = Rect.fromLTWH(0, 0, size.width, size.height);
-    Rect rect2 = sprite.getRect();
-    Rect rect = rect1.intersect(rect2);
-    if (rect.width < 0 || rect.height < 0) {
-      return true;
-    }
-    return false;
   }
 
   void addExplosion(Explosion explosion) {
@@ -215,7 +198,7 @@ class Game {
       width: size.width,
       height: size.height,
       child: Stack(
-        children: getWidgets(),
+        children: _buildWidgets(),
       ),
     );
   }
@@ -224,21 +207,17 @@ class Game {
     this.score += score;
   }
 
-  List<Widget> getWidgets() {
+  List<Widget> _buildWidgets() {
     var list = <Widget>[];
     //背景
     list.add(Image.asset(themeController.backgroundImage, fit: BoxFit.cover, width: size.width, height: size.height));
     //敌机
-    for (var enemyPlane in _enemies) {
+    for (var enemyPlane in _enemiesOrAwards) {
       list.add(enemyPlane.getRenderWidget());
     }
     //爆炸
     for (var explosion in _explosions) {
       list.add(explosion.getRenderWidget());
-    }
-    //奖励
-    for (var award in _awards) {
-      list.add(award.getRenderWidget());
     }
     //子弹
     for (var bullet in _bullets) {
@@ -271,6 +250,9 @@ class Game {
               height: 30,
             ),
             onPanDown: (detail) {
+              if (_gameOver) {
+                return;
+              }
               pause = true;
             },
           ),
@@ -304,7 +286,7 @@ class Game {
               height: 70,
               alignment: Alignment.center,
               child: const Text(
-                '飞机大战分数',
+                '得分',
                 style: TextStyle(fontSize: 24, color: Colors.black54, decoration: TextDecoration.none),
               ),
             ),

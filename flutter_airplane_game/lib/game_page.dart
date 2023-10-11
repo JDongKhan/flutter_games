@@ -73,23 +73,25 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin, Widg
   @override
   Widget build(BuildContext context) {
     ThemeController? controller = ThemeNotifierProviderWidget.of(context);
-    return LayoutBuilder(builder: (c, cs) {
-      if (_game == null) {
-        _game = Game(controller!);
-        _game?.size = Size(cs.maxWidth, cs.maxHeight);
-        _game?.startGame();
-      }
-      return GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onPanUpdate: (details) {
-          setState(() {
-            _game?.move(details.delta.dx, details.delta.dy);
-          });
-        },
-        child: SizedBox(
-          child: _game?.getRenderWidget(),
-        ),
-      );
-    });
+    return LayoutBuilder(
+      builder: (c, cs) {
+        if (_game == null) {
+          _game = Game(controller!);
+          _game?.size = Size(cs.maxWidth, cs.maxHeight);
+          _game?.startGame();
+        }
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onPanUpdate: (details) {
+            setState(() {
+              _game?.move(details.delta.dx, details.delta.dy);
+            });
+          },
+          child: SizedBox(
+            child: _game?.getRenderWidget(),
+          ),
+        );
+      },
+    );
   }
 }

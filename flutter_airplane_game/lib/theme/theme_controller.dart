@@ -19,18 +19,18 @@ class ThemeController extends ChangeNotifier {
   Color buttonColor = Colors.purple;
   Color buttonTextColor = Colors.white;
 
-  String backgroundImage = 'assets/imgs/bg.jpg.png';
-  String pauseBtnImage = 'assets/imgs/game_pause_pressed.png';
-  String runBtnImage = 'assets/imgs/game_pause_nor.png';
-  String awardImage = 'assets/imgs/ufo1.png';
-  String enemy1 = 'assets/imgs/enemy3_n1.png';
-  String enemy2 = 'assets/imgs/enemy3_n2.png';
-  String enemy3 = 'assets/imgs/enemy2.png';
-  String enemy4 = 'assets/imgs/enemy1.png';
-  String bullet1 = 'assets/imgs/bullet1.png';
-  String bullet2 = 'assets/imgs/bullet2.png';
-  String hero1 = 'assets/imgs/hero1.png';
-  String hero2 = 'assets/imgs/hero2.png';
+  String backgroundImage = 'assets/images/bg.jpg.png';
+  String pauseBtnImage = 'assets/images/game_pause_pressed.png';
+  String runBtnImage = 'assets/images/game_pause_nor.png';
+  String awardImage = 'assets/images/ufo1.png';
+  String enemy1 = 'assets/images/enemy3_n1.png';
+  String enemy2 = 'assets/images/enemy3_n2.png';
+  String enemy3 = 'assets/images/enemy2.png';
+  String enemy4 = 'assets/images/enemy1.png';
+  String bullet1 = 'assets/images/bullet1.png';
+  String bullet2 = 'assets/images/bullet2.png';
+  String hero1 = 'assets/images/hero1.png';
+  String hero2 = 'assets/images/hero2.png';
 
   void switchTheme({Color? color}) {
     _themeColor = color ?? _themeColor;

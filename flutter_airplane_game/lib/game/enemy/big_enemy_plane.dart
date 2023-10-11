@@ -34,12 +34,12 @@ class BigEnemyPlane extends EnemyPlane {
   @override
   List<String> getExplosionImageList() {
     return [
-      'assets/imgs/enemy3_down1.png',
-      'assets/imgs/enemy3_down2.png',
-      'assets/imgs/enemy3_down3.png',
-      'assets/imgs/enemy3_down4.png',
-      'assets/imgs/enemy3_down5.png',
-      'assets/imgs/enemy3_down6.png',
+      'assets/images/enemy3_down1.png',
+      'assets/images/enemy3_down2.png',
+      'assets/images/enemy3_down3.png',
+      'assets/images/enemy3_down4.png',
+      'assets/images/enemy3_down5.png',
+      'assets/images/enemy3_down6.png',
     ];
   }
 }

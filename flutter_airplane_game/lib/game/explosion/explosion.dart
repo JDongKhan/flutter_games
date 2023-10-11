@@ -3,31 +3,31 @@ import 'package:flutter/material.dart';
 
 ///爆炸
 class Explosion extends AutoSprite {
-  List<String> imgs;
+  List<String> images;
   final Size size;
   final double speed;
   Explosion({
-    required this.imgs,
+    required this.images,
     required super.themeController,
     required this.size,
     this.speed = 2,
   });
 
   @override
-  void update() {
-    super.update();
-    if (getImgIndex() >= imgs.length) {
+  void update(Size size) {
+    super.update(size);
+    if (getImgIndex() >= images.length) {
       destroyed = true;
     }
   }
 
   int getImgIndex() {
-    return flame ~/ 5;
+    return flame ~/ images.length;
   }
 
   @override
   String getImage() {
-    return imgs[getImgIndex()];
+    return images[getImgIndex()];
   }
 
   @override

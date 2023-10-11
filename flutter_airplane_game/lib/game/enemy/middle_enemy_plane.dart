@@ -27,10 +27,10 @@ class MiddleEnemyPlane extends EnemyPlane {
   @override
   List<String> getExplosionImageList() {
     return [
-      'assets/imgs/enemy2_down1.png',
-      'assets/imgs/enemy2_down2.png',
-      'assets/imgs/enemy2_down3.png',
-      'assets/imgs/enemy2_down4.png',
+      'assets/images/enemy2_down1.png',
+      'assets/images/enemy2_down2.png',
+      'assets/images/enemy2_down3.png',
+      'assets/images/enemy2_down4.png',
     ];
   }
 

@@ -18,10 +18,10 @@ class SmallEnemyPlane extends EnemyPlane {
   @override
   List<String> getExplosionImageList() {
     return [
-      'assets/imgs/enemy1_down1.png',
-      'assets/imgs/enemy1_down2.png',
-      'assets/imgs/enemy1_down3.png',
-      'assets/imgs/enemy1_down4.png',
+      'assets/images/enemy1_down1.png',
+      'assets/images/enemy1_down2.png',
+      'assets/images/enemy1_down3.png',
+      'assets/images/enemy1_down4.png',
     ];
   }
 

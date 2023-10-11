@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'sprite.dart';
 
 ///自动下落
@@ -7,11 +9,11 @@ abstract class AutoSprite extends Sprite {
   });
 
   @override
-  void update() {
-    super.update();
+  void update(Size size) {
+    super.update(size);
     if (!destroyed) {
       move(0, getSpeed());
-    } else {}
+    }
   }
 
   double getSpeed() {

@@ -36,7 +36,7 @@ abstract class Sprite {
   Size getSize();
 
   ///更新
-  void update() {
+  void update(Size size) {
     flame++;
   }
 
@@ -110,6 +110,17 @@ abstract class Sprite {
     Rect rect2 = sprite.getCollideRect();
     Rect rect = rect1.intersect(rect2);
     return rect.width >= 0 && rect.height >= 0;
+  }
+
+  ///是否超出屏幕
+  bool isOutScreen(Size size) {
+    Rect rect1 = Rect.fromLTWH(0, 0, size.width, size.height);
+    Rect rect2 = getRect();
+    Rect rect = rect1.intersect(rect2);
+    if (rect.width < 0 || rect.height < 0) {
+      return true;
+    }
+    return false;
   }
 
   void hit(Game game) {}

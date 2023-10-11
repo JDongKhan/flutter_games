@@ -1,54 +1,49 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import '../bullet/bullet.dart';
+import '../bullet/default_bullet.dart';
 import '../explosion/explosion.dart';
 import '../sprite.dart';
 
 import '../game.dart';
 
 ///主角
-class CombatAircraft extends Sprite {
-  /// 是否为单发子弹
-  bool single = true;
+abstract class CombatAircraft extends Sprite {
+  ///子弹等级
+  int bulletsLevel = 1;
+  //奖励时间
   var awardTime = 180;
   var bullets = <Bullet>[];
 
   CombatAircraft({
     required super.themeController,
-  }) {
-    collideOffset = 20;
+  });
+
+  void reset() {
+    bulletsLevel = 1;
+    destroyed = false;
   }
 
   @override
-  Size getSize() {
-    return const Size(100, 124);
-  }
-
-  @override
-  void update() {
+  void update(Size size) {
     if (awardTime > 0) {
       awardTime--;
     }
     if (awardTime <= 0) {
-      single = true;
+      bulletsLevel = 1;
     }
-    super.update();
+    super.update(size);
 
     ///子弹
     if (!destroyed && flame % 7 == 0) {
-      if (single) {
-        var bullet = Bullet(image: themeController.bullet1, themeController: themeController);
-        bullet.centerTo(x + getSize().width / 2, y);
+      int c = bulletsLevel ~/ 2;
+      String bulletsImage = themeController.bullet1;
+      if (bulletsLevel > 1) {
+        bulletsImage = themeController.bullet2;
+      }
+      for (int i = 0; i < bulletsLevel; i++) {
+        var bullet = DefaultBullet(image: bulletsImage, themeController: themeController);
+        bullet.centerTo(x + getSize().width / 2 - (c - i) * 20, y);
         bullets.add(bullet);
-      } else {
-        var bullet = Bullet(image: themeController.bullet2, themeController: themeController);
-        bullet.centerTo(x + getSize().width / 2 - 10, y);
-        bullets.add(bullet);
-
-        var bullet2 = Bullet(image: themeController.bullet2, themeController: themeController);
-        bullet2.centerTo(x + getSize().width / 2 + 10, y);
-        bullets.add(bullet2);
       }
     }
   }
@@ -62,19 +57,17 @@ class CombatAircraft extends Sprite {
 
   ///添加物品奖励
   void addAward() {
-    single = false;
+    bulletsLevel++;
     awardTime = 300;
   }
+
+  ///爆炸效果图片
+  List<String> getExplosionImageList();
 
   @override
   void hit(Game game) {
     Explosion explosion = Explosion(
-      imgs: [
-        'assets/imgs/hero_blowup_n1.png',
-        'assets/imgs/hero_blowup_n2.png',
-        'assets/imgs/hero_blowup_n3.png',
-        'assets/imgs/hero_blowup_n4.png',
-      ],
+      images: getExplosionImageList(),
       themeController: themeController,
       size: getSize(),
       speed: 0.5,
@@ -84,10 +77,5 @@ class CombatAircraft extends Sprite {
       game.addExplosion(explosion);
       destroyed = true;
     }
-  }
-
-  @override
-  String getImage() {
-    return (flame % 10) < 5 ? themeController.hero1 : themeController.hero2;
   }
 }

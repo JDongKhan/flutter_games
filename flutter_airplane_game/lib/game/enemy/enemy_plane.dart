@@ -42,7 +42,7 @@ abstract class EnemyPlane extends AutoSprite {
   @override
   void hit(Game game) {
     Explosion explosion = Explosion(
-      imgs: getExplosionImageList(),
+      images: getExplosionImageList(),
       size: getSize(),
       speed: 0.5,
       themeController: themeController,
