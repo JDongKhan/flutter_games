@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       data: ThemeController(),
       builder: (c, controller) {
         return MaterialApp(
-          title: 'Flutter Demo',
+          title: 'Snake Game',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,

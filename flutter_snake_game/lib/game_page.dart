@@ -14,6 +14,7 @@ enum Direction { left, right, up, down }
 
 const int pieceSize = 10;
 
+///游戏页面
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
 
@@ -22,7 +23,7 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
-  List<Point> _snakePiecePositions = [];
+  final List<Point> _snakePiecePositions = [];
   Point _applePosition = const Point(0, 0);
   Timer? _timer;
   Direction _direction = Direction.up;
@@ -61,24 +62,16 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
             behavior: HitTestBehavior.opaque,
             onVerticalDragUpdate: (detail) {
               if (detail.delta.dy < 0) {
-                setState(() {
-                  _direction = Direction.up;
-                });
+                _changeDirection(Direction.up);
               } else if (detail.delta.dy > 0) {
-                setState(() {
-                  _direction = Direction.down;
-                });
+                _changeDirection(Direction.down);
               }
             },
             onHorizontalDragUpdate: (detail) {
               if (detail.delta.dx < 0) {
-                setState(() {
-                  _direction = Direction.left;
-                });
+                _changeDirection(Direction.left);
               } else if (detail.delta.dx > 0) {
-                setState(() {
-                  _direction = Direction.right;
-                });
+                _changeDirection(Direction.right);
               }
             },
             child: Stack(
@@ -132,6 +125,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
 
   ///定时器刷新页面
   void _onTimerTick(Timer timer) {
+    //移动位置
     _move();
     //判断是否撞墙
     if (_isWallCollision()) {
@@ -145,7 +139,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
       return;
     }
 
-    ///判断有没有吃了苹果
+    //判断有没有吃了苹果
     if (_isAppleCollision()) {
       if (_isBoardFilled()) {
         _gotoGameOver();
@@ -156,7 +150,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
       return;
     }
 
-    ///改变速度
+    //改变速度
     _changeSpeed();
 
     //计算得分
@@ -286,6 +280,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     return newHeadPos;
   }
 
+  ///控制按钮 跟手势一起完善丰富的交互
   List<Widget> _buildControls() {
     return [
       Positioned(
@@ -302,9 +297,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 child: Control(
                   icon: Icons.arrow_left,
                   onTap: () {
-                    setState(() {
-                      _direction = Direction.left;
-                    });
+                    _changeDirection(Direction.left);
                   },
                 ),
               ),
@@ -315,9 +308,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 child: Control(
                   icon: Icons.arrow_drop_up,
                   onTap: () {
-                    setState(() {
-                      _direction = Direction.up;
-                    });
+                    _changeDirection(Direction.up);
                   },
                 ),
               ),
@@ -328,9 +319,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 child: Control(
                   icon: Icons.arrow_right,
                   onTap: () {
-                    setState(() {
-                      _direction = Direction.right;
-                    });
+                    _changeDirection(Direction.right);
                   },
                 ),
               ),
@@ -341,9 +330,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 child: Control(
                   icon: Icons.arrow_drop_down,
                   onTap: () {
-                    setState(() {
-                      _direction = Direction.down;
-                    });
+                    _changeDirection(Direction.down);
                   },
                 ),
               ),
@@ -352,6 +339,25 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         ),
       ),
     ];
+  }
+
+  void _changeDirection(Direction direction) {
+    //反方向不可用
+    if (direction == Direction.up && _direction == Direction.down) {
+      return;
+    }
+    if (direction == Direction.down && _direction == Direction.up) {
+      return;
+    }
+    if (direction == Direction.left && _direction == Direction.right) {
+      return;
+    }
+    if (direction == Direction.right && _direction == Direction.left) {
+      return;
+    }
+    setState(() {
+      _direction = direction;
+    });
   }
 
   ///跳转到游戏结束页面

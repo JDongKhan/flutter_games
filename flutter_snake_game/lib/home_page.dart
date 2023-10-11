@@ -4,6 +4,7 @@ import 'package:flutter_snake_game/theme/theme_widget.dart';
 
 import 'game_page.dart';
 
+///首页
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 

@@ -4,6 +4,7 @@ import 'game_page.dart';
 import 'theme/theme_controller.dart';
 import 'theme/theme_widget.dart';
 
+///游戏结束
 class GameOver extends StatelessWidget {
   final int score;
 

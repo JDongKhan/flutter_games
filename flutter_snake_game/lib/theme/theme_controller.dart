@@ -13,10 +13,10 @@ class ThemeController extends ChangeNotifier {
   bool debugRepaintRainbowEnabled = false;
 
   /// 当前主题颜色
-  Color _themeColor = Colors.blueAccent;
-  Color backgroundColor = Colors.blueAccent;
+  Color _themeColor = Colors.orangeAccent;
+  Color backgroundColor = Colors.orangeAccent;
 
-  Color buttonColor = Colors.red;
+  Color buttonColor = Colors.purple;
   Color buttonTextColor = Colors.white;
 
   void switchTheme({Color? color}) {

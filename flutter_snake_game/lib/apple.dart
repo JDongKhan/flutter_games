@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 class Apple extends StatelessWidget {
   const Apple({super.key});
 
+  //这里可以通过服务下发不同的样式
   @override
   Widget build(BuildContext context) {
     return Container(
