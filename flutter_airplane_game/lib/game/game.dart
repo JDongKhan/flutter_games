@@ -127,7 +127,12 @@ class Game {
       for (int j = 0; j < _bullets.length; j++) {
         Bullet bullet = _bullets[j];
         if (enemiesOrAward is EnemyPlane && enemiesOrAward.isCollide(bullet)) {
-          enemiesOrAward.attacked(1, this);
+          enemiesOrAward.attacked(bullet);
+          if (enemiesOrAward.hasDestroyed) {
+            addScore(enemiesOrAward.getValue());
+            //死亡爆炸
+            enemiesOrAward.onDestroy(this);
+          }
           _bullets.removeAt(j);
           j--;
         }
@@ -137,11 +142,11 @@ class Game {
       if (_combatAircraft.isCollide(enemiesOrAward)) {
         if (enemiesOrAward is EnemyPlane) {
           //飞机爆炸
-          _combatAircraft.hit(this);
+          _combatAircraft.onDestroy(this);
           _gameOver = true;
         } else if (enemiesOrAward is Award) {
           //奖励
-          _combatAircraft.addAward();
+          _combatAircraft.addAward(enemiesOrAward);
           _enemiesOrAwards.removeAt(i);
         }
       }

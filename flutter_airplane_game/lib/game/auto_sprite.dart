@@ -16,6 +16,7 @@ abstract class AutoSprite extends Sprite {
     }
   }
 
+  ///速度
   double getSpeed() {
     if (destroyed) {
       return 0;

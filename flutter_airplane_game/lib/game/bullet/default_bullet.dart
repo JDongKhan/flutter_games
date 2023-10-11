@@ -20,4 +20,9 @@ class DefaultBullet extends Bullet {
   String getImage() {
     return image;
   }
+
+  @override
+  int getDamage() {
+    return 1;
+  }
 }

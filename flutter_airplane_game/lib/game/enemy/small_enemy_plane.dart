@@ -2,16 +2,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'enemy_plane.dart';
 
-import '../explosion/explosion.dart';
-import '../game.dart';
-
 ///小型敌机
 class SmallEnemyPlane extends EnemyPlane {
   SmallEnemyPlane({
     required super.themeController,
   }) {
     power = 2;
-    value = 1000;
     collideOffset = 5;
   }
 
@@ -38,5 +34,10 @@ class SmallEnemyPlane extends EnemyPlane {
   @override
   Size getSize() {
     return const Size(51, 39);
+  }
+
+  @override
+  int getValue() {
+    return 100;
   }
 }

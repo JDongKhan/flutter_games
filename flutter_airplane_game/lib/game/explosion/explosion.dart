@@ -1,7 +1,7 @@
 import '../auto_sprite.dart';
 import 'package:flutter/material.dart';
 
-///爆炸
+///爆炸效果
 class Explosion extends AutoSprite {
   List<String> images;
   final Size size;

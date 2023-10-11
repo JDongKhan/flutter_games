@@ -19,4 +19,14 @@ class DefaultAward extends Award {
   double getSpeed() {
     return 4;
   }
+
+  @override
+  int getLevel() {
+    return 1;
+  }
+
+  @override
+  int getTime() {
+    return 300;
+  }
 }

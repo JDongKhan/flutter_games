@@ -19,6 +19,7 @@ abstract class Sprite {
 
   ///是否已销毁
   bool destroyed = false;
+  bool get hasDestroyed => destroyed;
 
   ///存活帧
   int flame = 0;
@@ -123,5 +124,5 @@ abstract class Sprite {
     return false;
   }
 
-  void hit(Game game) {}
+  void onDestroy(Game game) {}
 }

@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 import '../auto_sprite.dart';
 
+import '../bullet/bullet.dart';
 import '../explosion/explosion.dart';
 import '../game.dart';
 
@@ -10,23 +9,17 @@ abstract class EnemyPlane extends AutoSprite {
   /// 敌机的抗打击能力
   int power = 1;
 
-  /// 打一个敌机的得分
-  int value = 0;
-
   EnemyPlane({
     required super.themeController,
   });
 
-  ///被攻击 damage 伤害
-  void attacked(int damage, Game game) {
+  ///被子弹攻击
+  void attacked(Bullet bullet) {
     if (power > 0) {
-      power -= damage;
+      power -= bullet.getDamage();
       if (power <= 0) {
         //死亡
         destroyed = true;
-        game.addScore(value);
-        //死亡爆炸
-        hit(game);
       }
     }
   }
@@ -36,11 +29,14 @@ abstract class EnemyPlane extends AutoSprite {
     return 2;
   }
 
+  ///分
+  int getValue();
+
   ///爆炸效果图片
   List<String> getExplosionImageList();
 
   @override
-  void hit(Game game) {
+  void onDestroy(Game game) {
     Explosion explosion = Explosion(
       images: getExplosionImageList(),
       size: getSize(),

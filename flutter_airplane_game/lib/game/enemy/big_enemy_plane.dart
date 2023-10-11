@@ -2,16 +2,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'enemy_plane.dart';
 
-import '../explosion/explosion.dart';
-import '../game.dart';
-
 ///大型敌机
 class BigEnemyPlane extends EnemyPlane {
   BigEnemyPlane({
     required super.themeController,
   }) {
     power = 10;
-    value = 25000;
     collideOffset = 10;
   }
 
@@ -41,5 +37,10 @@ class BigEnemyPlane extends EnemyPlane {
       'assets/images/enemy3_down5.png',
       'assets/images/enemy3_down6.png',
     ];
+  }
+
+  @override
+  int getValue() {
+    return 2500;
   }
 }

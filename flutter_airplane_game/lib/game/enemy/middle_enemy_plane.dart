@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'enemy_plane.dart';
-import '../explosion/explosion.dart';
-
-import '../game.dart';
 
 ///中型敌机
 class MiddleEnemyPlane extends EnemyPlane {
@@ -10,7 +7,6 @@ class MiddleEnemyPlane extends EnemyPlane {
     required super.themeController,
   }) {
     power = 4;
-    value = 5000;
     collideOffset = 5;
   }
 
@@ -37,5 +33,10 @@ class MiddleEnemyPlane extends EnemyPlane {
   @override
   String getImage() {
     return themeController.enemy3;
+  }
+
+  @override
+  int getValue() {
+    return 500;
   }
 }
