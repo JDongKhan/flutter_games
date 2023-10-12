@@ -1,5 +1,8 @@
 # flutter_games
 
+
+部分项目代码与资源来自于互联网，自己对代码结构与逻辑进行了优化整理，让其更易扩展丰富游戏
+
 ### flutter_snake_game:贪吃蛇
 
 ![demo png](snake.gif "snake")
