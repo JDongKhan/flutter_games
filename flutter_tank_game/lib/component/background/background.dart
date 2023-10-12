@@ -1,10 +1,5 @@
 import 'dart:async';
-import 'dart:ui';
-
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
-import 'package:vector_math/vector_math_64.dart';
-
 import '../base_sprite_component.dart';
 
 ///游戏背景

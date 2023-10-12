@@ -1,10 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flame/game.dart';
-import 'package:flame/timer.dart';
+import 'package:flame/components.dart';
 import 'package:flutter_tank_game/data/data_manager.dart';
-import 'package:flutter_tank_game/utils/extension.dart';
 
 import '../../controller/controller_listener.dart';
 import 'base_tank.dart';
@@ -165,6 +163,14 @@ abstract class DefaultTank extends BaseTank {
       add(bullet);
       _bullets.add(bullet);
     }
+  }
+
+  @override
+  void onChildrenChanged(Component child, ChildrenChangeType type) {
+    if (type == ChildrenChangeType.removed) {
+      _bullets.remove(child);
+    }
+    super.onChildrenChanged(child, type);
   }
 
   @override

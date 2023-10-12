@@ -1,56 +1,40 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:flame/components.dart';
+import 'package:flame/extensions.dart';
 import 'package:flame/sprite.dart';
 
 import '../base_component.dart';
 
-class OrangeExplosion extends WindowComponent {
-  OrangeExplosion(this.position) : exRect = Rect.fromCenter(center: position, width: 30, height: 30);
-
-  ///爆炸位置
-  final Offset position;
-
-  ///爆炸纹理
-  final List<Sprite> sprites = [];
-
-  ///爆炸纹理尺寸
-  final Rect exRect;
-
-  int playIndex = 0;
-
-  ///爆炸开始经过的时间
-  /// * 用于调整[sprites]的fps
-  double passedTime = 0;
+class OrangeExplosion extends SpriteAnimationGroupComponent {
+  OrangeExplosion();
 
   @override
   FutureOr<void> onLoad() async {
+    size = Vector2(30, 30);
     await init();
   }
 
   Future init() async {
+    ///爆炸纹理
+    final List<Sprite> sprites = [];
     sprites.add(await Sprite.load('explosion/explosion1.webp'));
     sprites.add(await Sprite.load('explosion/explosion2.webp'));
     sprites.add(await Sprite.load('explosion/explosion3.webp'));
     sprites.add(await Sprite.load('explosion/explosion4.webp'));
     sprites.add(await Sprite.load('explosion/explosion5.webp'));
-    super.onLoad();
-  }
 
-  @override
-  void render(Canvas canvas) {
-    if (sprites.length == 5 && playIndex < 5) {
-      sprites[playIndex].renderRect(canvas, exRect);
-    }
-  }
-
-  @override
-  void update(double dt) {
-    if (playIndex < 5) {
-      //1秒 5张图片
-      passedTime += dt;
-      playIndex = passedTime ~/ 0.2;
-    } else {
+    SpriteAnimation running = SpriteAnimation.spriteList(sprites, stepTime: 0.1, loop: false);
+    animations = {
+      'running': running,
+    };
+    //当前状态是running
+    current = 'running';
+    //完成
+    animationTicker?.onComplete = () {
       removeFromParent();
-    }
+    };
+
+    super.onLoad();
   }
 }
