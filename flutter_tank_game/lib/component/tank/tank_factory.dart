@@ -134,7 +134,7 @@ class SandTankFlowLine extends ComputerTankFlowLine<ComputerTank> {
   }
 }
 
-///流水线基类
+///流水线基类 抽象工厂
 /// * 用于生成电脑tank
 /// * 见[ComputerTankSpawner]
 abstract class ComputerTankFlowLine<T extends ComputerTank> implements ComputerTankSpawnerTrigger<T> {

@@ -148,7 +148,6 @@ abstract class DefaultTank extends BaseTank {
     required TankModel config,
   }) : super(id: id, birthPosition: birthPosition, config: config);
 
-  /**********  射击  ***************/
   ///子弹
   final List<BaseBullet> _bullets = [];
   List<BaseBullet> get bullets => _bullets;
@@ -173,10 +172,10 @@ abstract class DefaultTank extends BaseTank {
 
   @override
   void render(Canvas canvas) {
-    _bullets.render(canvas);
     if (!isStandBy) {
       return;
     }
+    _bullets.render(canvas);
     //将canvas 原点设置在tank上
     canvas.save();
     canvas.translate(position.dx, position.dy);
@@ -187,23 +186,23 @@ abstract class DefaultTank extends BaseTank {
 
   @override
   void update(double dt) {
-    _bullets.update(dt);
     if (!isStandBy) {
       return;
     }
+    _bullets.update(dt);
     rotateBody(dt);
     rotateTurret(dt);
     move(dt);
     _bullets.removeWhere((element) => element.dismissible);
   }
 
-  @override
+  ///绘制炮体
   void drawBody(Canvas canvas) {
     canvas.rotate(bodyAngle);
     bodySprite?.renderRect(canvas, bodyRect);
   }
 
-  @override
+  ///绘制炮台
   void drawTurret(Canvas canvas) {
     //旋转炮台
     canvas.rotate(turretAngle);
@@ -211,7 +210,7 @@ abstract class DefaultTank extends BaseTank {
     turretSprite?.renderRect(canvas, turretRect);
   }
 
-  @override
+  ///移动
   void move(double t) {
     if (targetBodyAngle == null) return;
     if (bodyAngle == targetBodyAngle) {
@@ -225,7 +224,7 @@ abstract class DefaultTank extends BaseTank {
     position = Offset(position.dx.clamp(0, config.activeSize.width), position.dy.clamp(0, config.activeSize.height));
   }
 
-  @override
+  ///旋转炮体
   void rotateBody(double t) {
     if (targetBodyAngle != null) {
       final double rotationRate = pi * t;
@@ -258,7 +257,7 @@ abstract class DefaultTank extends BaseTank {
     }
   }
 
-  @override
+  ///旋转炮台
   void rotateTurret(double t) {
     if (targetTurretAngle != null) {
       final double rotationRate = pi * t;
@@ -294,9 +293,11 @@ abstract class DefaultTank extends BaseTank {
     }
   }
 
+  ///坦克id
   @override
   int getTankId() => id;
 
+  ///弹框角度
   @override
   double getBulletFireAngle() {
     double bulletAngle = bodyAngle + turretAngle;
@@ -309,6 +310,7 @@ abstract class DefaultTank extends BaseTank {
     return bulletAngle;
   }
 
+  ///坦克开火的位置
   @override
   Offset getBulletFirePosition() =>
       position +

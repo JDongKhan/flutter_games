@@ -14,14 +14,8 @@ mixin MapTheater on FlameGame {
   final BattleBackground _bg = BattleBackground();
 
   @override
-  void render(Canvas canvas) {
-    _bg.render(canvas);
-    super.render(canvas);
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    _bg.onGameResize(canvasSize);
-    super.onGameResize(canvasSize);
+  void onMount() {
+    add(_bg);
+    super.onMount();
   }
 }

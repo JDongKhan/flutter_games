@@ -3,9 +3,6 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import '../../base_component.dart';
 
-import 'dart:async' as async;
-import 'dart:collection';
-
 ///电脑炮弹
 class ComputerBullet extends BaseBullet {
   factory ComputerBullet.green({required int tankId, required Size activeSize}) {
@@ -18,10 +15,13 @@ class ComputerBullet extends BaseBullet {
 
   ComputerBullet(this.spritePath, {required int tankId, required Size activeSize}) : super(tankId: tankId, activeSize: activeSize);
 
+  ///子弹样式文件地址
   final String spritePath;
 
+  ///子弹
   late Sprite _sprite;
 
+  ///子弹区域
   final Rect _rect = const Rect.fromLTWH(-4, -2, 6, 4);
 
   @override
@@ -142,9 +142,9 @@ abstract class BaseBullet extends WindowComponent {
   }
 
   @override
-  void onGameResize(Vector2 canvasSize) {
-    activeSize = canvasSize.toSize();
-    super.onGameResize(canvasSize);
+  void onGameResize(Vector2 size) {
+    activeSize = size.toSize();
+    super.onGameResize(size);
   }
 
   @override
@@ -158,32 +158,12 @@ abstract class BaseBullet extends WindowComponent {
   }
 
   @override
-  void update(double t) {
+  void update(double dt) {
     if (dismissible) return;
-    position += Offset.fromDirection(angle, speed * t);
+    position += Offset.fromDirection(angle, speed * dt);
 
     if (!activeSize.contains(position)) {
       status = BulletStatus.outOfBorder;
     }
-  }
-}
-
-class BulletTrigger {
-  BulletTrigger() {
-    trigger = async.Timer.periodic(const Duration(milliseconds: 100), _onTick);
-  }
-
-  final Queue<Function> _task = Queue();
-
-  late final async.Timer trigger;
-
-  void _onTick(async.Timer timer) {
-    if (_task.isEmpty) return;
-    final Function t = _task.removeFirst();
-    t.call();
-  }
-
-  void chargeLoading(Function b) {
-    _task.add(b);
   }
 }

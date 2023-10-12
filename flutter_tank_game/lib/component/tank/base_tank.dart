@@ -97,24 +97,6 @@ abstract class BaseTank extends WindowComponent {
     return isStandBy;
   }
 
-  ///移动
-  /// [t] 过渡时间-> 理论值16.66ms
-  void move(double t);
-
-  ///绘制车体
-  void drawBody(Canvas canvas);
-
-  ///绘制炮塔
-  void drawTurret(Canvas canvas);
-
-  ///旋转车体
-  /// [t] 过渡时间-> 理论值16.66ms
-  void rotateBody(double t);
-
-  ///旋转炮塔
-  /// [t] 过渡时间-> 理论值16.66ms
-  void rotateTurret(double t);
-
   ///开火
   void fire();
 

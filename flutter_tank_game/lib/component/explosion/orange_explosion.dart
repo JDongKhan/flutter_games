@@ -6,9 +6,7 @@ import 'package:flame/sprite.dart';
 import '../base_component.dart';
 
 class OrangeExplosion extends WindowComponent {
-  OrangeExplosion(this.position) : exRect = Rect.fromCenter(center: position, width: 30, height: 30) {
-    loadSprite();
-  }
+  OrangeExplosion(this.position) : exRect = Rect.fromCenter(center: position, width: 30, height: 30);
 
   ///爆炸位置
   final Offset position;
@@ -25,12 +23,14 @@ class OrangeExplosion extends WindowComponent {
   /// * 用于调整[sprites]的fps
   double passedTime = 0;
 
-  void loadSprite() async {
+  @override
+  void onLoad() async {
     sprites.add(await Sprite.load('explosion/explosion1.webp'));
     sprites.add(await Sprite.load('explosion/explosion2.webp'));
     sprites.add(await Sprite.load('explosion/explosion3.webp'));
     sprites.add(await Sprite.load('explosion/explosion4.webp'));
     sprites.add(await Sprite.load('explosion/explosion5.webp'));
+    super.onLoad();
   }
 
   @override

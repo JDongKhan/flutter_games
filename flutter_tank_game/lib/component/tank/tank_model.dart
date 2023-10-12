@@ -3,18 +3,19 @@ import 'dart:ui';
 ///坦克基础配置模型
 /// * 由[TankModelBuilder]负责构建
 class TankModel {
-  TankModel(
-      {required this.id,
-      required this.bodySpritePath,
-      required this.turretSpritePath,
-      required this.ratio,
-      required this.speed,
-      required this.turnSpeed,
-      required this.bodyWidth,
-      required this.bodyHeight,
-      required this.turretWidth,
-      required this.turretHeight,
-      required this.activeSize});
+  TankModel({
+    required this.id,
+    required this.bodySpritePath,
+    required this.turretSpritePath,
+    required this.ratio,
+    required this.speed,
+    required this.turnSpeed,
+    required this.bodyWidth,
+    required this.bodyHeight,
+    required this.turretWidth,
+    required this.turretHeight,
+    required this.activeSize,
+  });
 
   final int id;
 

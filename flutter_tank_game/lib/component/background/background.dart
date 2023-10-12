@@ -7,15 +7,14 @@ import '../base_component.dart';
 
 ///游戏背景
 class BattleBackground extends WindowComponent {
-  BattleBackground() {
-    init();
-  }
-
+  BattleBackground();
   Sprite? bgSprite;
   Rect? bgRect;
 
-  void init() async {
+  @override
+  void onLoad() async {
     bgSprite = await Sprite.load('new_map.webp');
+    super.onLoad();
   }
 
   @override
@@ -24,11 +23,8 @@ class BattleBackground extends WindowComponent {
   }
 
   @override
-  void update(double t) {}
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    bgRect = Rect.fromLTWH(0, 0, canvasSize.storage.first, canvasSize.storage.last);
-    super.onGameResize(canvasSize);
+  void onGameResize(Vector2 size) {
+    bgRect = Rect.fromLTWH(0, 0, size.storage.first, size.storage.last);
+    super.onGameResize(size);
   }
 }
