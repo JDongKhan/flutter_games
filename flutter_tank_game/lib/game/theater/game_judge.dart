@@ -1,5 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flame/timer.dart';
+import 'package:flutter_tank_game/data/data_manager.dart';
 
 import '../../component/tank/default_tank.dart';
 import '../../utils/extension.dart';
@@ -40,6 +41,7 @@ mixin GameJudge on FlameGame, PlayerTankTheater, ComputerTankTheater, Decoration
         if (hitZone.distance < hitDistance) {
           c.isDead = true;
           bullet.hit();
+          DataManager.instance.score += c.getScore();
           addExplosions(c.position);
         }
       }

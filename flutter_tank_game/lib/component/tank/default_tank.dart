@@ -51,7 +51,8 @@ class ComputerTank extends DefaultTank {
 
   Timer? _timer;
 
-  void generateNewTarget() {
+  ///生成随机路径
+  void _generateNewTarget() {
     final double x = random.nextDouble().clamp(activeBorderLow, activeBorderUp) * config.activeSize.width;
     final double y = random.nextDouble().clamp(activeBorderLow, activeBorderUp) * config.activeSize.height;
 
@@ -66,13 +67,19 @@ class ComputerTank extends DefaultTank {
   void deposit() {
     super.deposit();
     _timer ??= Timer(1, repeat: true, onTick: fire);
-    generateNewTarget();
+    _generateNewTarget();
   }
 
   @override
   void update(double dt) {
     _timer?.update(dt);
     super.update(dt);
+  }
+
+  @override
+  void onRemove() {
+    _timer?.stop();
+    super.onRemove();
   }
 
   @override
@@ -83,9 +90,13 @@ class ComputerTank extends DefaultTank {
         super.move(t);
       } else {
         movedDis = 0;
-        generateNewTarget();
+        _generateNewTarget();
       }
     }
+  }
+
+  int getScore() {
+    return 10;
   }
 
   @override

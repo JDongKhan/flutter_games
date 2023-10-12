@@ -1,13 +1,9 @@
 import 'dart:io';
-import 'dart:ui' as ui;
-
-import 'package:flame/flame.dart';
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'controller/control_panel_widget.dart';
-import 'game/tank_game.dart';
+import 'home_page.dart';
+import 'theme/theme_controller.dart';
+import 'theme/theme_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,53 +17,27 @@ void main() async {
     ///全面屏
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
-
-  final TankGame tankGame = TankGame();
-
-  runApp(
-    Directionality(
-      textDirection: TextDirection.ltr,
-      child: Stack(
-        children: [
-          FutureBuilder<List<ui.Image>>(
-            future: loadAssets(),
-            initialData: [],
-            builder: (ctx, snapShot) {
-              if (snapShot.data?.isEmpty ?? true) {
-                return const Center(
-                  child: LinearProgressIndicator(
-                    color: Colors.blue,
-                  ),
-                );
-              }
-              return GameWidget(game: tankGame);
-            },
-          ),
-          ControlPanelWidget(
-            tankController: tankGame,
-          ),
-        ],
-      ),
-    ),
-  );
+  runApp(const MyApp());
 }
 
-Future<List<ui.Image>> loadAssets() {
-  return Flame.images.loadAll([
-    'new_map.webp',
-    'tank/t_body_blue.webp',
-    'tank/t_turret_blue.webp',
-    'tank/t_body_green.webp',
-    'tank/t_turret_green.webp',
-    'tank/t_body_sand.webp',
-    'tank/t_turret_sand.webp',
-    'tank/bullet_blue.webp',
-    'tank/bullet_green.webp',
-    'tank/bullet_sand.webp',
-    'explosion/explosion1.webp',
-    'explosion/explosion2.webp',
-    'explosion/explosion3.webp',
-    'explosion/explosion4.webp',
-    'explosion/explosion5.webp',
-  ]);
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return ThemeNotifierProviderWidget(
+      data: ThemeController(),
+      builder: (c, controller) {
+        return MaterialApp(
+          title: 'Snake Game',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: const HomePage(),
+        );
+      },
+    );
+  }
 }
