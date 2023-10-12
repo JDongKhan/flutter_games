@@ -64,10 +64,10 @@ class ComputerTank extends DefaultTank {
   }
 
   @override
-  void deposit() {
-    super.deposit();
+  void onMount() {
     _timer ??= Timer(1, repeat: true, onTick: fire);
     _generateNewTarget();
+    super.onMount();
   }
 
   @override
@@ -148,11 +148,6 @@ abstract class DefaultTank extends BaseTank {
     required TankModel config,
   }) : super(id: id, birthPosition: birthPosition, config: config);
 
-  @override
-  void deposit() {
-    isDead = false;
-  }
-
   /**********  射击  ***************/
   ///子弹
   final List<BaseBullet> _bullets = [];
@@ -179,7 +174,7 @@ abstract class DefaultTank extends BaseTank {
   @override
   void render(Canvas canvas) {
     _bullets.render(canvas);
-    if (!isStandBy || isDead) {
+    if (!isStandBy) {
       return;
     }
     //将canvas 原点设置在tank上
@@ -193,7 +188,7 @@ abstract class DefaultTank extends BaseTank {
   @override
   void update(double dt) {
     _bullets.update(dt);
-    if (!isStandBy || isDead) {
+    if (!isStandBy) {
       return;
     }
     rotateBody(dt);

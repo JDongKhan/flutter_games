@@ -12,45 +12,19 @@ mixin ComputerTankTheater on FlameGame {
   ///生成机器人坦克
   final ComputerTankSpawner _computerSpawner = ComputerTankSpawner();
 
-  ///机器人坦克
-  final List<ComputerTank> _computers = [];
-  List<ComputerTank> get computers => _computers;
-
-  ///初始化敌军
-  ///一般情况下是在游戏伊始时执行。
-  void _initEnemyTank() {
-    _computerSpawner.fastSpawn(_computers);
-  }
-
   ///随机敌人
   void randomSpanTank() {
-    _computerSpawner.randomSpan(_computers);
+    ComputerTank tank = _computerSpawner.randomSpan();
+    add(tank);
   }
 
   @override
-  void onGameResize(Vector2 canvasSize) {
-    if (_computers.isEmpty) {
-      //初始化机器人管理器
-      _computerSpawner.warmUp(canvasSize.toSize());
-      _initEnemyTank();
-      for (var element in _computers) {
-        element.deposit();
-      }
+  void onMount() {
+    //初始化机器人管理器
+    List<ComputerTank> list = _computerSpawner.init(canvasSize.toSize());
+    for (var element in list) {
+      add(element);
     }
-    _computers.onGameResize(canvasSize);
-    super.onGameResize(canvasSize);
-  }
-
-  @override
-  void render(Canvas canvas) {
-    _computers.render(canvas);
-    super.render(canvas);
-  }
-
-  @override
-  void update(double dt) {
-    _computers.update(dt);
-    super.update(dt);
-    _computers.removeWhere((element) => element.isDead);
+    super.onMount();
   }
 }

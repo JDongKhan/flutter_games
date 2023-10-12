@@ -52,9 +52,6 @@ abstract class BaseTank extends WindowComponent {
   ///炮塔尺寸
   late Rect turretRect;
 
-  ///tank是否存活
-  bool isDead = true;
-
   ///车体
   Sprite? bodySprite;
 
@@ -99,9 +96,6 @@ abstract class BaseTank extends WindowComponent {
     isStandBy = true;
     return isStandBy;
   }
-
-  ///部署
-  void deposit();
 
   ///移动
   /// [t] 过渡时间-> 理论值16.66ms

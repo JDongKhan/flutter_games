@@ -1,111 +1,8 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'default_tank.dart';
 import 'tank_model.dart';
-import '../../game/tank_game.dart';
-
-///用于生产绿色tank
-class GreenTankFlowLine extends ComputerTankFlowLine<ComputerTank> {
-  GreenTankFlowLine(Offset depositPosition, Size activeSize) : super(depositPosition, activeSize);
-
-  @override
-  ComputerTank spawnTank() {
-    final TankModelBuilder greenBuilder =
-        TankModelBuilder(id: DateTime.now().millisecondsSinceEpoch, bodySpritePath: 'tank/t_body_green.webp', turretSpritePath: 'tank/t_turret_green.webp', activeSize: activeSize);
-    return TankFactory.buildGreenTank(greenBuilder.build(), depositPosition);
-  }
-}
-
-///用于生产黄色tank
-class SandTankFlowLine extends ComputerTankFlowLine<ComputerTank> {
-  SandTankFlowLine(Offset depositPosition, Size activeSize) : super(depositPosition, activeSize);
-
-  @override
-  ComputerTank spawnTank() {
-    final TankModelBuilder sandBuilder =
-        TankModelBuilder(id: DateTime.now().millisecondsSinceEpoch, bodySpritePath: 'tank/t_body_sand.webp', turretSpritePath: 'tank/t_turret_sand.webp', activeSize: activeSize);
-    return TankFactory.buildSandTank(sandBuilder.build(), depositPosition);
-  }
-}
-
-///流水线基类
-/// * 用于生成电脑tank
-/// * 见[ComputerTankSpawner]
-abstract class ComputerTankFlowLine<T extends ComputerTank> implements ComputerTankSpawnerTrigger<T> {
-  ComputerTankFlowLine(this.depositPosition, this.activeSize);
-
-  ///活动范围
-  final Size activeSize;
-
-  ///部署位置
-  final Offset depositPosition;
-}
-
-abstract class ComputerTankSpawnerTrigger<T extends ComputerTank> {
-  T spawnTank();
-}
-
-///电脑生成器
-/// * [PlayerTankTheater]下，tank生成的直接参与者，负责电脑的随机生成。
-///
-/// * [spawners]为具体[ComputerTank]的生成流水线，见[GreenTankFlowLine]和[SandTankFlowLine]
-///   流水线内部的[ComputerTank]产出由[TankFactory]负责。
-class ComputerTankSpawner {
-  ///流水线
-  List<ComputerTankFlowLine> spawners = [];
-
-  ///生成器初始化完成
-  bool standby = false;
-
-  ///构建中
-  /// * 将会影响是否相应tank生成
-  bool building = false;
-
-  ///初始化调用
-  /// * 用于配置流水线
-  void warmUp(Size bgSize) {
-    if (standby) {
-      return;
-    }
-    standby = true;
-
-    spawners.addAll([
-      GreenTankFlowLine(const Offset(100, 100), bgSize),
-      GreenTankFlowLine(Offset(100, bgSize.height * 0.8), bgSize),
-      SandTankFlowLine(Offset(bgSize.width - 100, 100), bgSize),
-      SandTankFlowLine(Offset(bgSize.width - 100, bgSize.height * 0.8), bgSize)
-    ]);
-  }
-
-  ///快速生成tank
-  /// * 各生产线生成一辆tank
-  /// * [plaza]为接收tank对象
-  void fastSpawn(List<ComputerTank> plaza) {
-    plaza.addAll(spawners.map<ComputerTank>((e) => e.spawnTank()..deposit()).toList());
-  }
-
-  ///随机生成一辆tank
-  /// * [plaza]为接收tank对象
-  void randomSpan(List<ComputerTank> plaza) {
-    if (building) {
-      return;
-    }
-    building = true;
-    _startSpawn(() {
-      //洗牌
-      spawners.shuffle();
-      plaza.add(spawners.first.spawnTank()..deposit());
-      building = false;
-    });
-  }
-
-  ///用于约束生产速度
-  void _startSpawn(Function task) {
-    Future.delayed(const Duration(milliseconds: 1500)).then((value) {
-      task();
-    });
-  }
-}
 
 ///用于构建tank
 class TankFactory {
@@ -210,5 +107,94 @@ class TankModelBuilder {
       turretHeight: turretHeight,
       activeSize: activeSize,
     );
+  }
+}
+
+///用于生产绿色tank
+class GreenTankFlowLine extends ComputerTankFlowLine<ComputerTank> {
+  GreenTankFlowLine(Offset depositPosition, Size activeSize) : super(depositPosition, activeSize);
+
+  @override
+  ComputerTank spawnTank() {
+    final TankModelBuilder greenBuilder =
+        TankModelBuilder(id: DateTime.now().millisecondsSinceEpoch, bodySpritePath: 'tank/t_body_green.webp', turretSpritePath: 'tank/t_turret_green.webp', activeSize: activeSize);
+    return TankFactory.buildGreenTank(greenBuilder.build(), depositPosition);
+  }
+}
+
+///用于生产黄色tank
+class SandTankFlowLine extends ComputerTankFlowLine<ComputerTank> {
+  SandTankFlowLine(Offset depositPosition, Size activeSize) : super(depositPosition, activeSize);
+
+  @override
+  ComputerTank spawnTank() {
+    final TankModelBuilder sandBuilder =
+        TankModelBuilder(id: DateTime.now().millisecondsSinceEpoch, bodySpritePath: 'tank/t_body_sand.webp', turretSpritePath: 'tank/t_turret_sand.webp', activeSize: activeSize);
+    return TankFactory.buildSandTank(sandBuilder.build(), depositPosition);
+  }
+}
+
+///流水线基类
+/// * 用于生成电脑tank
+/// * 见[ComputerTankSpawner]
+abstract class ComputerTankFlowLine<T extends ComputerTank> implements ComputerTankSpawnerTrigger<T> {
+  ComputerTankFlowLine(this.depositPosition, this.activeSize);
+
+  ///活动范围
+  final Size activeSize;
+
+  ///部署位置
+  final Offset depositPosition;
+}
+
+abstract class ComputerTankSpawnerTrigger<T extends ComputerTank> {
+  T spawnTank();
+}
+
+///电脑生成器
+/// * [PlayerTankTheater]下，tank生成的直接参与者，负责电脑的随机生成。
+///
+/// * [spawners]为具体[ComputerTank]的生成流水线，见[GreenTankFlowLine]和[SandTankFlowLine]
+///   流水线内部的[ComputerTank]产出由[TankFactory]负责。
+class ComputerTankSpawner {
+  late Size size;
+  Random random = Random();
+
+  ///快速生成tank
+  /// * 各生产线生成一辆tank
+  /// * [plaza]为接收tank对象
+  List<ComputerTank> init(Size size) {
+    this.size = size;
+
+    ///流水线
+    List<ComputerTank> spawners = [];
+    for (int i = 0; i < 5; i++) {
+      int x = random.nextInt(size.width.toInt());
+      int y = random.nextInt(size.height.toInt());
+      int type = random.nextInt(2);
+      ComputerTankFlowLine e = _buildTankFlowLine(type, Offset(x.toDouble(), y.toDouble()));
+      spawners.add(e.spawnTank());
+    }
+    return spawners;
+  }
+
+  ///随机生成一辆tank
+  /// * [plaza]为接收tank对象
+  ComputerTank randomSpan() {
+    int type = random.nextInt(2);
+    int x = random.nextInt(size.width.toInt());
+    int y = random.nextInt(size.height.toInt());
+    ComputerTankFlowLine e = _buildTankFlowLine(type, Offset(x.toDouble(), y.toDouble()));
+    return e.spawnTank();
+  }
+
+  ComputerTankFlowLine _buildTankFlowLine(int type, Offset position) {
+    ComputerTankFlowLine e;
+    if (type == 0) {
+      e = SandTankFlowLine(position, size);
+    } else {
+      e = GreenTankFlowLine(position, size);
+    }
+    return e;
   }
 }

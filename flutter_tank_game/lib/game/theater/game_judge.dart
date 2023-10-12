@@ -1,3 +1,4 @@
+import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/timer.dart';
 import 'package:flutter_tank_game/data/data_manager.dart';
@@ -18,15 +19,27 @@ import 'player_tank_theater.dart';
 /// * 用于观测[Sprite]之间的交互，并触发衍生交互，
 /// * 如：是否击中、[OrangeExplosion]的触发等.
 mixin GameJudge on FlameGame, PlayerTankTheater, ComputerTankTheater, DecorationTheater {
+  final List<ComputerTank> aliveComputers = [];
+
   @override
   void update(double dt) {
     super.update(dt);
-    if (computers.length < 4) {
+    if (aliveComputers.length < 4) {
       randomSpanTank();
     }
 
     ///check hit
-    checkHit();
+    _checkHit();
+  }
+
+  @override
+  void onChildrenChanged(Component child, ChildrenChangeType type) {
+    super.onChildrenChanged(child, type);
+    if (type == ChildrenChangeType.removed) {
+      aliveComputers.remove(child);
+    } else if (type == ChildrenChangeType.added && child is ComputerTank) {
+      aliveComputers.add(child);
+    }
   }
 
   ///命中距离
@@ -34,13 +47,13 @@ mixin GameJudge on FlameGame, PlayerTankTheater, ComputerTankTheater, Decoration
   final double hitDistance = 10;
 
   ///检查是否有tank被击中
-  void checkHit() {
+  void _checkHit() {
     player?.bullets.forEach((bullet) {
-      for (var c in computers) {
+      for (var c in aliveComputers) {
         final Offset hitZone = c.position - bullet.position;
         if (hitZone.distance < hitDistance) {
-          c.isDead = true;
           bullet.hit();
+          c.removeFromParent();
           DataManager.instance.score += c.getScore();
           addExplosions(c.position);
         }

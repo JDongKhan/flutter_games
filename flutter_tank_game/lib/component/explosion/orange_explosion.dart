@@ -21,8 +21,6 @@ class OrangeExplosion extends WindowComponent {
 
   int playIndex = 0;
 
-  bool playDone = false;
-
   ///爆炸开始经过的时间
   /// * 用于调整[sprites]的fps
   double passedTime = 0;
@@ -37,26 +35,19 @@ class OrangeExplosion extends WindowComponent {
 
   @override
   void render(Canvas canvas) {
-    if (playDone) return;
     if (sprites.length == 5 && playIndex < 5) {
       sprites[playIndex].renderRect(canvas, exRect);
     }
   }
 
   @override
-  void update(double t) {
-    if (playDone) return;
+  void update(double dt) {
     if (playIndex < 5) {
       //1秒 5张图片
-      passedTime += t;
+      passedTime += dt;
       playIndex = passedTime ~/ 0.2;
     } else {
-      playDone = true;
+      removeFromParent();
     }
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
   }
 }

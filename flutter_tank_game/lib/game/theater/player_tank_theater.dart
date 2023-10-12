@@ -19,28 +19,14 @@ mixin PlayerTankTheater on FlameGame implements TankController {
         TankModelBuilder(id: DateTime.now().millisecondsSinceEpoch, bodySpritePath: 'tank/t_body_blue.webp', turretSpritePath: 'tank/t_turret_blue.webp', activeSize: bgSize);
 
     _player ??= TankFactory.buildPlayerTank(playerBuilder.build(), Offset(bgSize.width / 2, bgSize.height / 2));
-    _player?.deposit();
+    //添加玩家
+    add(_player!);
   }
 
   @override
-  void onGameResize(Vector2 canvasSize) {
-    if (_player == null) {
-      initPlayer(canvasSize);
-    }
-    _player?.onGameResize(canvasSize);
-    super.onGameResize(canvasSize);
-  }
-
-  @override
-  void render(Canvas canvas) {
-    _player?.render(canvas);
-    super.render(canvas);
-  }
-
-  @override
-  void update(double dt) {
-    _player?.update(dt);
-    super.update(dt);
+  void onMount() {
+    initPlayer(canvasSize);
+    super.onMount();
   }
 
   ///点击开火
