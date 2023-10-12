@@ -6,12 +6,11 @@ import 'package:flame/sprite.dart';
 
 import '../base_component.dart';
 
-class OrangeExplosion extends SpriteAnimationGroupComponent {
+class OrangeExplosion extends SpriteAnimationComponent {
   OrangeExplosion();
 
   @override
   FutureOr<void> onLoad() async {
-    size = Vector2(30, 30);
     await init();
   }
 
@@ -25,16 +24,12 @@ class OrangeExplosion extends SpriteAnimationGroupComponent {
     sprites.add(await Sprite.load('explosion/explosion5.webp'));
 
     SpriteAnimation running = SpriteAnimation.spriteList(sprites, stepTime: 0.1, loop: false);
-    animations = {
-      'running': running,
-    };
-    //当前状态是running
-    current = 'running';
+    size = Vector2(30, 30);
+    animation = running;
     //完成
     animationTicker?.onComplete = () {
       removeFromParent();
     };
-
     super.onLoad();
   }
 }
