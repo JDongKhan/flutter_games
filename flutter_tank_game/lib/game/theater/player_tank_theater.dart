@@ -9,7 +9,7 @@ import '../../controller/controller_listener.dart';
 ///负责管理玩家tank
 mixin PlayerTankTheater on FlameGame implements TankController {
   PlayerTank? _player;
-  get player => _player;
+  PlayerTank? get player => _player;
 
   ///初始化玩家
   void initPlayer(Vector2 canvasSize) {

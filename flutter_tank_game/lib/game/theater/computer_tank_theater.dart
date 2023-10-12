@@ -14,9 +14,7 @@ mixin ComputerTankTheater on FlameGame {
 
   ///机器人坦克
   final List<ComputerTank> _computers = [];
-  get computers => _computers;
-
-  Timer? _timer;
+  List<ComputerTank> get computers => _computers;
 
   ///初始化敌军
   ///一般情况下是在游戏伊始时执行。
@@ -29,17 +27,8 @@ mixin ComputerTankTheater on FlameGame {
     _computerSpawner.randomSpan(_computers);
   }
 
-  ///电脑开火
-  void onFireTimerTrigger() {
-    _computers.shuffle();
-    for (var element in _computers) {
-      element.fire();
-    }
-  }
-
   @override
   void onGameResize(Vector2 canvasSize) {
-    _timer ??= Timer(1, repeat: true, onTick: onFireTimerTrigger);
     if (_computers.isEmpty) {
       //初始化机器人管理器
       _computerSpawner.warmUp(canvasSize.toSize());
@@ -60,15 +49,8 @@ mixin ComputerTankTheater on FlameGame {
 
   @override
   void update(double dt) {
-    _timer?.update(dt);
     _computers.update(dt);
     super.update(dt);
     _computers.removeWhere((element) => element.isDead);
-  }
-
-  @override
-  void onDetach() {
-    _timer?.stop();
-    super.onDetach();
   }
 }

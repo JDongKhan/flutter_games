@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/game.dart';
+import 'package:flame/timer.dart';
 import 'package:flutter_tank_game/utils/extension.dart';
 
 import '../../controller/controller_listener.dart';
@@ -48,6 +49,8 @@ class ComputerTank extends DefaultTank {
   ///移动的距离
   double movedDis = 0;
 
+  Timer? _timer;
+
   void generateNewTarget() {
     final double x = random.nextDouble().clamp(activeBorderLow, activeBorderUp) * config.activeSize.width;
     final double y = random.nextDouble().clamp(activeBorderLow, activeBorderUp) * config.activeSize.height;
@@ -62,7 +65,14 @@ class ComputerTank extends DefaultTank {
   @override
   void deposit() {
     super.deposit();
+    _timer ??= Timer(1, repeat: true, onTick: fire);
     generateNewTarget();
+  }
+
+  @override
+  void update(double dt) {
+    _timer?.update(dt);
+    super.update(dt);
   }
 
   @override
@@ -135,7 +145,7 @@ abstract class DefaultTank extends BaseTank {
   /**********  射击  ***************/
   ///子弹
   final List<BaseBullet> _bullets = [];
-  get bullets => _bullets;
+  List<BaseBullet> get bullets => _bullets;
 
   ///炮弹最大数量
   final int _maxPlayerBulletNum = 20;

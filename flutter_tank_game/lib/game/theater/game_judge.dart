@@ -34,15 +34,15 @@ mixin GameJudge on FlameGame, PlayerTankTheater, ComputerTankTheater, Decoration
 
   ///检查是否有tank被击中
   void checkHit() {
-    player.bullets.forEach((bullet) {
-      computers.forEach((c) {
+    player?.bullets.forEach((bullet) {
+      for (var c in computers) {
         final Offset hitZone = c.position - bullet.position;
         if (hitZone.distance < hitDistance) {
           c.isDead = true;
           bullet.hit();
           addExplosions(c.position);
         }
-      });
+      }
     });
     //todo 玩家无敌
     //computerBullets.forEach((element) { });
