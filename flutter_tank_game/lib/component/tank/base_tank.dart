@@ -16,8 +16,8 @@ abstract class BaseTank extends WindowComponent {
     required this.config,
     required Offset birthPosition,
   }) : position = birthPosition {
-    bodyRect = Rect.fromCenter(center: Offset.zero, width: bodyWidth * ratio, height: bodyHeight * ratio);
-    turretRect = Rect.fromCenter(center: Offset.zero, width: turretWidth * ratio, height: turretHeight * ratio);
+    bodySize = Size(bodyWidth * ratio, bodyHeight * ratio);
+    turretSize = Size(turretWidth * ratio, turretHeight * ratio);
     init();
   }
 
@@ -47,10 +47,10 @@ abstract class BaseTank extends WindowComponent {
   double get bulletBornLoc => 18;
 
   ///车体尺寸
-  late Rect bodyRect;
+  late Size bodySize;
 
   ///炮塔尺寸
-  late Rect turretRect;
+  late Size turretSize;
 
   ///车体
   Sprite? bodySprite;

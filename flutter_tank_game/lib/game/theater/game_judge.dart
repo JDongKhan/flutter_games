@@ -42,16 +42,14 @@ mixin GameJudge on FlameGame, PlayerTankTheater, ComputerTankTheater, Decoration
     }
   }
 
-  ///命中距离
-  /// * 车身位置和炮弹位置小于10 算命中
-  final double hitDistance = 10;
-
   ///检查是否有tank被击中
   void _checkHit() {
     player?.bullets.forEach((bullet) {
       for (var c in aliveComputers) {
-        final Offset hitZone = c.position - bullet.position;
-        if (hitZone.distance < hitDistance) {
+        Rect rect = bullet.rect.intersect(c.position & c.bodySize);
+        //碰撞检测
+        bool isCollide = rect.width >= 0 && rect.height >= 0;
+        if (isCollide) {
           bullet.hit();
           c.removeFromParent();
           DataManager.instance.score += c.getScore();

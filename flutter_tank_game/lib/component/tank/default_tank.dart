@@ -199,7 +199,7 @@ abstract class DefaultTank extends BaseTank {
   ///绘制炮体
   void drawBody(Canvas canvas) {
     canvas.rotate(bodyAngle);
-    bodySprite?.renderRect(canvas, bodyRect);
+    bodySprite?.renderRect(canvas, Rect.fromCenter(center: Offset.zero, width: bodySize.width, height: bodySize.height));
   }
 
   ///绘制炮台
@@ -207,7 +207,7 @@ abstract class DefaultTank extends BaseTank {
     //旋转炮台
     canvas.rotate(turretAngle);
     // 绘制炮塔
-    turretSprite?.renderRect(canvas, turretRect);
+    turretSprite?.renderRect(canvas, Rect.fromCenter(center: Offset.zero, width: turretSize.width, height: turretSize.height));
   }
 
   ///移动

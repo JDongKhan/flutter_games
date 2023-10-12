@@ -22,10 +22,8 @@ class ComputerBullet extends BaseBullet {
   late Sprite _sprite;
 
   ///子弹区域
-  final Rect _rect = const Rect.fromLTWH(-4, -2, 6, 4);
-
   @override
-  Rect get bulletRect => _rect;
+  Size get size => const Size(6, 4);
 
   @override
   Sprite get bulletSprite => _sprite;
@@ -51,13 +49,11 @@ class PlayerBullet extends BaseBullet {
 
   late Sprite _sprite;
 
-  final Rect _rect = const Rect.fromLTWH(-4, -2, 8, 4);
-
   @override
   Sprite get bulletSprite => _sprite;
 
   @override
-  Rect get bulletRect => _rect;
+  Size get size => const Size(8, 4);
 
   @override
   Future<void> loadSprite() async {
@@ -103,8 +99,12 @@ abstract class BaseBullet extends WindowComponent {
   final int tankId;
 
   ///子弹尺寸
-  /// * 后期可以加入特效等
-  Rect get bulletRect;
+  Size get size;
+
+  ///位置
+  Offset position = Offset.zero;
+
+  Rect get rect => position & size;
 
   ///子弹皮肤
   Sprite get bulletSprite;
@@ -112,9 +112,6 @@ abstract class BaseBullet extends WindowComponent {
   ///可活动范围
   /// * 超出判定为失效子弹
   Size activeSize;
-
-  ///位置
-  Offset position = Offset.zero;
 
   ///速度
   double speed = 200;
@@ -153,7 +150,7 @@ abstract class BaseBullet extends WindowComponent {
     canvas.save();
     canvas.translate(position.dx, position.dy);
     canvas.rotate(angle);
-    bulletSprite.renderRect(canvas, bulletRect);
+    bulletSprite.renderRect(canvas, Rect.fromCenter(center: Offset.zero, width: size.width, height: size.height));
     canvas.restore();
   }
 

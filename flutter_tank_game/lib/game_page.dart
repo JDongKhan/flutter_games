@@ -19,7 +19,7 @@ class GamePage extends StatelessWidget {
       children: [
         FutureBuilder<List<ui.Image>>(
           future: loadAssets(),
-          initialData: [],
+          initialData: const [],
           builder: (ctx, snapShot) {
             if (snapShot.data?.isEmpty ?? true) {
               return const Center(
