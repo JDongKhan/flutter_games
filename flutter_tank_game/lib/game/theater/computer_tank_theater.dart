@@ -1,8 +1,4 @@
-import 'dart:ui';
-
 import 'package:flame/game.dart';
-import 'package:flame/timer.dart';
-import 'package:flutter_tank_game/utils/extension.dart';
 
 import '../../component/tank/default_tank.dart';
 import '../../component/tank/tank_factory.dart';

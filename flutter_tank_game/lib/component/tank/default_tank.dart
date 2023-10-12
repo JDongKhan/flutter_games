@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flame/game.dart';
 import 'package:flame/timer.dart';
+import 'package:flutter_tank_game/data/data_manager.dart';
 import 'package:flutter_tank_game/utils/extension.dart';
 
 import '../../controller/controller_listener.dart';
@@ -65,7 +66,8 @@ class ComputerTank extends DefaultTank {
 
   @override
   void onMount() {
-    _timer ??= Timer(1, repeat: true, onTick: fire);
+    double t = 1 / (DataManager.instance.level + 1);
+    _timer ??= Timer(t, repeat: true, onTick: fire);
     _generateNewTarget();
     super.onMount();
   }

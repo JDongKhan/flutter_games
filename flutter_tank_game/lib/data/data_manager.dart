@@ -24,8 +24,18 @@ class DataManager extends ChangeNotifier {
   int get score => _score;
   set score(v) {
     _score = v;
+    //难度级别
+    if (v > 1000) {
+      level = 3;
+    } else if (v > 500) {
+      level = 2;
+    } else if (v > 100) {
+      level = 1;
+    }
     notifyListeners();
   }
+
+  int level = 0;
 
   void startGame() {
     pause = false;

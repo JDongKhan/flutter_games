@@ -24,7 +24,7 @@ mixin GameJudge on FlameGame, PlayerTankTheater, ComputerTankTheater, Decoration
   @override
   void update(double dt) {
     super.update(dt);
-    if (aliveComputers.length < 4) {
+    if (aliveComputers.length < (4 + DataManager.instance.level)) {
       randomSpanTank();
     }
 
