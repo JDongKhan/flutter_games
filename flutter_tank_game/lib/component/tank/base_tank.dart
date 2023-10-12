@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flame/sprite.dart';
@@ -18,7 +19,6 @@ abstract class BaseTank extends WindowComponent {
   }) : position = birthPosition {
     bodySize = Size(bodyWidth * ratio, bodyHeight * ratio);
     turretSize = Size(turretWidth * ratio, turretHeight * ratio);
-    init();
   }
 
   final TankModel config;
@@ -89,6 +89,11 @@ abstract class BaseTank extends WindowComponent {
 
   ///炮塔纹理
   String get turretSpritePath => config.turretSpritePath;
+
+  @override
+  FutureOr<void> onLoad() async {
+    await init();
+  }
 
   Future<bool> init() async {
     bodySprite = await Sprite.load(bodySpritePath);

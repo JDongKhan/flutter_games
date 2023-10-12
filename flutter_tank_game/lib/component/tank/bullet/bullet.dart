@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
@@ -18,19 +19,13 @@ class ComputerBullet extends BaseBullet {
   ///子弹样式文件地址
   final String spritePath;
 
-  ///子弹
-  late Sprite _sprite;
-
   ///子弹区域
   @override
   Size get size => const Size(6, 4);
 
   @override
-  Sprite get bulletSprite => _sprite;
-
-  @override
   Future<void> loadSprite() async {
-    _sprite = await Sprite.load(spritePath);
+    sprite = await Sprite.load(spritePath);
   }
 
   @override
@@ -47,17 +42,12 @@ class ComputerBullet extends BaseBullet {
 class PlayerBullet extends BaseBullet {
   PlayerBullet({required int tankId, required Size activeSize}) : super(tankId: tankId, activeSize: activeSize);
 
-  late Sprite _sprite;
-
-  @override
-  Sprite get bulletSprite => _sprite;
-
   @override
   Size get size => const Size(8, 4);
 
   @override
   Future<void> loadSprite() async {
-    _sprite = await Sprite.load('tank/bullet_blue.webp');
+    sprite = await Sprite.load('tank/bullet_blue.webp');
   }
 
   @override
@@ -83,9 +73,7 @@ abstract class BaseBullet extends WindowComponent {
   BaseBullet({
     required this.tankId,
     required this.activeSize,
-  }) {
-    init();
-  }
+  });
 
   BaseBullet copyWith({
     int? tankId,
@@ -107,7 +95,7 @@ abstract class BaseBullet extends WindowComponent {
   Rect get rect => position & size;
 
   ///子弹皮肤
-  Sprite get bulletSprite;
+  Sprite? sprite;
 
   ///可活动范围
   /// * 超出判定为失效子弹
@@ -127,13 +115,19 @@ abstract class BaseBullet extends WindowComponent {
 
   void hit() {
     status = BulletStatus.hit;
+    removeFromParent();
   }
 
   ///加载炮弹纹理
   Future<void> loadSprite();
 
+  @override
+  FutureOr<void> onLoad() async {
+    await init();
+  }
+
   ///初始化炮弹
-  void init() async {
+  Future init() async {
     await loadSprite();
     status = BulletStatus.standBy;
   }
@@ -150,7 +144,7 @@ abstract class BaseBullet extends WindowComponent {
     canvas.save();
     canvas.translate(position.dx, position.dy);
     canvas.rotate(angle);
-    bulletSprite.renderRect(canvas, Rect.fromCenter(center: Offset.zero, width: size.width, height: size.height));
+    sprite?.renderRect(canvas, Rect.fromCenter(center: Offset.zero, width: size.width, height: size.height));
     canvas.restore();
   }
 
@@ -161,6 +155,7 @@ abstract class BaseBullet extends WindowComponent {
 
     if (!activeSize.contains(position)) {
       status = BulletStatus.outOfBorder;
+      removeFromParent();
     }
   }
 }

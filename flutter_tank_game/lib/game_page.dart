@@ -15,27 +15,82 @@ class GamePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final TankGame tankGame = TankGame();
     tankGame.pauseWhenBackgrounded = true;
-    return Stack(
-      children: [
-        FutureBuilder<List<ui.Image>>(
-          future: loadAssets(),
-          initialData: const [],
-          builder: (ctx, snapShot) {
-            if (snapShot.data?.isEmpty ?? true) {
-              return const Center(
+    return FutureBuilder<List<ui.Image>>(
+      future: loadAssets(),
+      initialData: const [],
+      builder: (ctx, snapShot) {
+        if (snapShot.data?.isEmpty ?? true) {
+          return _buildLoading();
+        }
+        return GameWidget(
+          game: tankGame,
+          initialActiveOverlays: const ['PauseMenu', 'Control'],
+          loadingBuilder: (c) {
+            return _buildLoading();
+          },
+          errorBuilder: (c, error) {
+            return _buildError(error);
+          },
+          overlayBuilderMap: {
+            'PauseMenu': (context, game) {
+              return Menu(game: tankGame);
+            },
+            'Control': (c, game) {
+              return ControlPanelWidget(
+                tankController: tankGame,
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildLoading() {
+    return Scaffold(
+      body: Container(
+        color: Colors.blue,
+        child: const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '加载中...',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+              ),
+              SizedBox(
+                width: 80,
                 child: LinearProgressIndicator(
                   color: Colors.blue,
                 ),
-              );
-            }
-            return GameWidget(game: tankGame);
-          },
+              ),
+            ],
+          ),
         ),
-        ControlPanelWidget(
-          tankController: tankGame,
+      ),
+    );
+  }
+
+  Widget _buildError(Object error) {
+    return Scaffold(
+      body: Container(
+        color: Colors.blue,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                '额，出错了',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+              ),
+              Text(
+                error.toString(),
+                style: const TextStyle(fontSize: 12),
+              ),
+            ],
+          ),
         ),
-        Menu(game: tankGame),
-      ],
+      ),
     );
   }
 

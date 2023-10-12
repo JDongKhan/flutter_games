@@ -161,14 +161,15 @@ abstract class DefaultTank extends BaseTank {
   @override
   void fire() {
     if (_bullets.length < _maxPlayerBulletNum) {
-      _bullets.add(getBullet());
+      BaseBullet bullet = getBullet();
+      add(bullet);
+      _bullets.add(bullet);
     }
   }
 
   @override
   void onGameResize(Vector2 size) {
     config.activeSize = size.toSize();
-    _bullets.onGameResize(size);
     super.onGameResize(size);
   }
 
@@ -177,7 +178,6 @@ abstract class DefaultTank extends BaseTank {
     if (!isStandBy) {
       return;
     }
-    _bullets.render(canvas);
     //将canvas 原点设置在tank上
     canvas.save();
     canvas.translate(position.dx, position.dy);
@@ -191,11 +191,9 @@ abstract class DefaultTank extends BaseTank {
     if (!isStandBy) {
       return;
     }
-    _bullets.update(dt);
     rotateBody(dt);
     rotateTurret(dt);
     move(dt);
-    _bullets.removeWhere((element) => element.dismissible);
   }
 
   ///绘制炮体

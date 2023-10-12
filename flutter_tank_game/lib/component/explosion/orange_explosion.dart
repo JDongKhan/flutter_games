@@ -1,6 +1,5 @@
+import 'dart:async';
 import 'dart:ui';
-
-import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 
 import '../base_component.dart';
@@ -24,7 +23,11 @@ class OrangeExplosion extends WindowComponent {
   double passedTime = 0;
 
   @override
-  void onLoad() async {
+  FutureOr<void> onLoad() async {
+    await init();
+  }
+
+  Future init() async {
     sprites.add(await Sprite.load('explosion/explosion1.webp'));
     sprites.add(await Sprite.load('explosion/explosion2.webp'));
     sprites.add(await Sprite.load('explosion/explosion3.webp'));
