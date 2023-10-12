@@ -1,0 +1,22 @@
+import 'dart:ui';
+
+import 'package:flame/components.dart';
+
+import '../component/base_component.dart';
+
+/// 备注：拓展类
+
+///[WindowComponent]相关list的拓展类。
+extension GameExtension<T extends WindowComponent> on List<T> {
+  void onGameResize(Vector2 canvasSize) {
+    forEach((element) => element.onGameResize(canvasSize));
+  }
+
+  void render(Canvas canvas) {
+    forEach((element) => element.render(canvas));
+  }
+
+  void update(double dt) {
+    forEach((element) => element.update(dt));
+  }
+}
