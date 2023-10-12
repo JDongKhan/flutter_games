@@ -1,8 +1,7 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
-import '../base_component.dart';
+import '../../base_component.dart';
 
 import 'dart:async' as async;
 import 'dart:collection';
@@ -23,7 +22,7 @@ class ComputerBullet extends BaseBullet {
 
   late Sprite _sprite;
 
-  Rect _rect = Rect.fromLTWH(-4, -2, 6, 4);
+  final Rect _rect = const Rect.fromLTWH(-4, -2, 6, 4);
 
   @override
   Rect get bulletRect => _rect;
@@ -38,7 +37,7 @@ class ComputerBullet extends BaseBullet {
 
   @override
   ComputerBullet copyWith({int? tankId, Size? activeSize, Offset? position, double? angle, BulletStatus status = BulletStatus.none}) {
-    final ComputerBullet pb = ComputerBullet(this.spritePath, tankId: tankId ?? this.tankId, activeSize: activeSize ?? this.activeSize);
+    final ComputerBullet pb = ComputerBullet(spritePath, tankId: tankId ?? this.tankId, activeSize: activeSize ?? this.activeSize);
     pb.position = position ?? Offset.zero;
     pb.angle = angle ?? 0;
     pb.status = status;
@@ -52,7 +51,7 @@ class PlayerBullet extends BaseBullet {
 
   late Sprite _sprite;
 
-  Rect _rect = Rect.fromLTWH(-4, -2, 8, 4);
+  final Rect _rect = const Rect.fromLTWH(-4, -2, 8, 4);
 
   @override
   Sprite get bulletSprite => _sprite;

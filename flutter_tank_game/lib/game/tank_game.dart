@@ -4,15 +4,15 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tank_game/component/explosion/decoration_theater.dart';
-import 'package:flutter_tank_game/component/tank/tank_model.dart';
 import 'package:flutter_tank_game/observer/game_observer.dart';
 import 'package:flutter_tank_game/utils/computer_timer.dart';
+import '../component/tank/base_tank.dart';
+import '../component/tank/default_tank.dart';
 import '../utils/extension.dart';
 
-import '../component/tank/bullet.dart';
+import '../component/tank/bullet/bullet.dart';
 import '../component/tank/tank_factory.dart';
 import '../controller/controller_listener.dart';
-import 'game_action.dart';
 
 ///游戏入口
 /// * 继承于[FlameGame]
@@ -102,6 +102,7 @@ mixin TankTheater on FlameGame, BulletTheater implements TankController, Compute
     }
   }
 
+  ///机器旋转
   @override
   void bodyAngleChanged(Offset newAngle) {
     if (newAngle == Offset.zero) {
@@ -111,6 +112,7 @@ mixin TankTheater on FlameGame, BulletTheater implements TankController, Compute
     }
   }
 
+  ///开火系统旋转
   @override
   void turretAngleChanged(Offset newAngle) {
     if (newAngle == Offset.zero) {
@@ -122,50 +124,54 @@ mixin TankTheater on FlameGame, BulletTheater implements TankController, Compute
 }
 
 ///负责坦克的开火系统
-mixin BulletTheater on FlameGame implements ComputerTankAction {
+mixin BulletTheater on FlameGame {
   ///电脑tank的开火器
-  final BulletTrigger trigger = BulletTrigger();
+  final BulletTrigger _trigger = BulletTrigger();
 
   ///玩家炮弹最大数量
-  final int maxPlayerBulletNum = 20;
+  final int _maxPlayerBulletNum = 20;
 
-  List<BaseBullet> computerBullets = [];
+  ///电脑的子弹
+  final List<BaseBullet> _computerBullets = [];
 
-  List<BaseBullet> playerBullets = [];
+  ///玩家的子弹
+  final List<BaseBullet> _playerBullets = [];
+  get playerBullets => _playerBullets;
 
-  void playerTankFire(TankFireHelper helper) {
-    if (playerBullets.length < maxPlayerBulletNum) {
-      playerBullets.add(helper.getBullet());
+  ///玩家开火
+  void playerTankFire(BaseTank tank) {
+    if (_playerBullets.length < _maxPlayerBulletNum) {
+      _playerBullets.add(tank.getBullet());
     }
   }
 
-  @override
-  void computerTankFire(TankFireHelper helper) {
-    trigger.chargeLoading(() {
-      computerBullets.add(helper.getBullet());
+  ///电脑开火
+  void computerTankFire(BaseTank tank) {
+    _trigger.chargeLoading(() {
+      _computerBullets.add(tank.getBullet());
     });
   }
 
   @override
   void onGameResize(Vector2 canvasSize) {
-    computerBullets.onGameResize(canvasSize);
-    playerBullets.onGameResize(canvasSize);
+    _computerBullets.onGameResize(canvasSize);
+    _playerBullets.onGameResize(canvasSize);
     super.onGameResize(canvasSize);
   }
 
   @override
   void render(Canvas canvas) {
-    computerBullets.render(canvas);
-    playerBullets.render(canvas);
+    _computerBullets.render(canvas);
+    _playerBullets.render(canvas);
     super.render(canvas);
   }
 
   @override
   void update(double dt) {
-    computerBullets.update(dt);
-    playerBullets.update(dt);
+    _computerBullets.update(dt);
+    _playerBullets.update(dt);
     super.update(dt);
-    computerBullets.removeWhere((element) => element.dismissible);
-    playerBullets.removeWhere((element) => element.dismissible);
+    _computerBullets.removeWhere((element) => element.dismissible);
+    _playerBullets.removeWhere((element) => element.dismissible);
   }
 }
