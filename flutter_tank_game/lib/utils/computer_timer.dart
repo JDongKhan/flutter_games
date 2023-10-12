@@ -5,16 +5,16 @@ import 'package:flutter/foundation.dart';
 /// 备注：电脑计时器，用于执行一些定时性操作
 
 ///电脑自动开火接口
-abstract class ComputerTimerListener{
+abstract class ComputerTimerListener {
   void onFireTimerTrigger();
 }
 
 ///电脑计时器
 /// * 主要用于触发一些自动行为，如[ComputerTimerListener]自动开火。
-mixin ComputerTimer on FlameGame{
+mixin ComputerTimer on FlameGame {
+  Timer? _timer;
 
-  Timer? timer;
-
+  ///开火射击
   void onTick() {
     _listener?.onFireTimerTrigger();
   }
@@ -25,32 +25,16 @@ mixin ComputerTimer on FlameGame{
     _listener = listener;
   }
 
-
   @override
   void onGameResize(Vector2 canvasSize) {
     super.onGameResize(canvasSize);
     //limit's unit : second
-    timer ??= Timer(1, repeat: true, onTick: onTick);
+    _timer ??= Timer(1, repeat: true, onTick: onTick);
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    timer!.update(dt);
+    _timer!.update(dt);
   }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

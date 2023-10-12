@@ -29,92 +29,94 @@ mixin TankTheater on FlameGame, BulletTheater implements TankController, Compute
   ///生成机器人坦克
   final ComputerTankSpawner _computerSpawner = ComputerTankSpawner();
 
-  PlayerTank? player;
+  PlayerTank? _player;
 
   ///机器人坦克
-  final List<ComputerTank> computers = [];
+  final List<ComputerTank> _computers = [];
+  get computers => _computers;
 
+  ///初始化玩家
   void initPlayer(Vector2 canvasSize) {
     final Size bgSize = canvasSize.toSize();
 
     final TankModelBuilder playerBuilder =
         TankModelBuilder(id: DateTime.now().millisecondsSinceEpoch, bodySpritePath: 'tank/t_body_blue.webp', turretSpritePath: 'tank/t_turret_blue.webp', activeSize: bgSize);
 
-    player ??= TankFactory.buildPlayerTank(playerBuilder.build(), Offset(bgSize.width / 2, bgSize.height / 2));
-    player!.deposit();
+    _player ??= TankFactory.buildPlayerTank(playerBuilder.build(), Offset(bgSize.width / 2, bgSize.height / 2));
+    _player?.deposit();
   }
 
   ///初始化敌军
   /// * 一般情况下是在游戏伊始时执行。
-  void initEnemyTank() {
-    _computerSpawner.fastSpawn(computers);
+  void _initEnemyTank() {
+    _computerSpawner.fastSpawn(_computers);
   }
 
   void randomSpanTank() {
-    _computerSpawner.randomSpan(computers);
+    _computerSpawner.randomSpan(_computers);
   }
 
   @override
   void onFireTimerTrigger() {
-    computers.shuffle();
-    computers.forEach(computerTankFire);
+    _computers.shuffle();
+    _computers.forEach(computerTankFire);
   }
 
   @override
   void onGameResize(Vector2 canvasSize) {
-    if (player == null) {
+    if (_player == null) {
       initPlayer(canvasSize);
     }
-    if (computers.isEmpty) {
+    if (_computers.isEmpty) {
       //初始化机器人管理器
       _computerSpawner.warmUp(canvasSize.toSize());
-      initEnemyTank();
-      for (var element in computers) {
+      _initEnemyTank();
+      for (var element in _computers) {
         element.deposit();
       }
     }
-    player?.onGameResize(canvasSize);
-    computers.onGameResize(canvasSize);
+    _player?.onGameResize(canvasSize);
+    _computers.onGameResize(canvasSize);
     super.onGameResize(canvasSize);
   }
 
   @override
   void render(Canvas canvas) {
-    player?.render(canvas);
-    computers.render(canvas);
+    _player?.render(canvas);
+    _computers.render(canvas);
     super.render(canvas);
   }
 
   @override
   void update(double dt) {
-    player?.update(dt);
-    computers.update(dt);
+    _player?.update(dt);
+    _computers.update(dt);
     super.update(dt);
-    computers.removeWhere((element) => element.isDead);
+    _computers.removeWhere((element) => element.isDead);
   }
 
   @override
   void fireButtonTriggered() {
-    if (player != null) {
-      playerTankFire(player!);
+    if (_player != null) {
+      playerTankFire(_player!);
     }
   }
 
   @override
   void bodyAngleChanged(Offset newAngle) {
     if (newAngle == Offset.zero) {
-      player?.targetBodyAngle = null;
+      _player?.targetBodyAngle = null;
     } else {
-      player?.targetBodyAngle = newAngle.direction; //范围（pi,-pi）
+      _player?.targetBodyAngle = newAngle.direction; //范围（pi,-pi）
     }
   }
 
   @override
   void turretAngleChanged(Offset newAngle) {
     if (newAngle == Offset.zero) {
-      player?.targetTurretAngle = null;
+      _player?.targetTurretAngle = null;
     } else {
-      player?.targetTurretAngle = newAngle.direction;
+      _player?.targetTurretAngle = newAngle.direction;
     }
   }
 }
