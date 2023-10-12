@@ -1,8 +1,10 @@
+import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter_tank_game/data/data_manager.dart';
+import 'component/tank/default_tank.dart';
 import 'controller/control_panel_widget.dart';
 import 'game/tank_game.dart';
 import 'theme/theme_controller.dart';
@@ -128,10 +130,21 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  int _score = 0;
   @override
   void initState() {
     DataManager.instance.addListener(_updateInfo);
+    _listenerScore();
     super.initState();
+  }
+
+  void _listenerScore() {
+    final ComponentsNotifier<PlayerTank> playerNotifier = widget.game.componentsNotifier<PlayerTank>();
+    playerNotifier.addListener(() {
+      PlayerTank? player = playerNotifier.single;
+      _score = player?.score ?? 0;
+      setState(() {});
+    });
   }
 
   void _updateInfo() {
@@ -154,7 +167,7 @@ class _MenuState extends State<Menu> {
         children: [
           GestureDetector(
             child: Image.asset(
-              DataManager.instance.pause ? themeController!.pauseBtnImage : themeController!.runBtnImage,
+              widget.game.paused ? themeController!.pauseBtnImage : themeController!.runBtnImage,
               width: 30,
               height: 30,
             ),
@@ -162,15 +175,15 @@ class _MenuState extends State<Menu> {
               if (DataManager.instance.gameOver) {
                 return;
               }
-              DataManager.instance.pause = !DataManager.instance.pause;
-              widget.game.paused = DataManager.instance.pause;
+              widget.game.paused = !widget.game.paused;
+              setState(() {});
             },
           ),
           const SizedBox(
             width: 12,
           ),
           Text(
-            '${DataManager.instance.score}',
+            '$_score',
             style: const TextStyle(fontSize: 22, color: Colors.black54, decoration: TextDecoration.none),
           ),
         ],

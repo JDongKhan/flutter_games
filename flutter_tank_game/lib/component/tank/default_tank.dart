@@ -104,7 +104,7 @@ class ComputerTank extends DefaultTank {
 }
 
 ///玩家
-class PlayerTank extends DefaultTank implements TankController {
+class PlayerTank extends DefaultTank with Notifier implements TankController {
   PlayerTank({required int id, required Offset birthPosition, required TankModel config})
       : bullet = PlayerBullet(tankId: id, activeSize: config.activeSize),
         super(id: id, birthPosition: birthPosition, config: config);
@@ -113,6 +113,22 @@ class PlayerTank extends DefaultTank implements TankController {
 
   @override
   BaseBullet getBullet() => bullet.copyWith(position: getBulletFirePosition(), angle: getBulletFireAngle());
+
+  ///得分
+  int _score = 0;
+  int get score => _score;
+  set score(v) {
+    _score = v;
+    //难度级别
+    if (v > 1000) {
+      DataManager.instance.level = 3;
+    } else if (v > 500) {
+      DataManager.instance.level = 2;
+    } else if (v > 100) {
+      DataManager.instance.level = 1;
+    }
+    notifyListeners();
+  }
 
   @override
   void bodyAngleChanged(Offset newAngle) {

@@ -52,12 +52,18 @@ mixin GameJudge on FlameGame, PlayerTankTheater, ComputerTankTheater, Decoration
         if (isCollide) {
           bullet.hit();
           c.removeFromParent();
-          DataManager.instance.score += c.getScore();
+          _calculateScore(c.getScore());
           addExplosions(c.position);
         }
       }
     });
     //todo 玩家无敌
     //computerBullets.forEach((element) { });
+  }
+
+  void _calculateScore(int score) {
+    final ComponentsNotifier<PlayerTank> playerNotifier = componentsNotifier<PlayerTank>();
+    PlayerTank? player = playerNotifier.single;
+    player?.score += score;
   }
 }
