@@ -2,7 +2,9 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/game.dart';
+import 'package:flutter_tank_game/utils/extension.dart';
 
+import '../../controller/controller_listener.dart';
 import 'base_tank.dart';
 import 'bullet/bullet.dart';
 import 'tank_model.dart';
@@ -81,7 +83,7 @@ class ComputerTank extends DefaultTank {
 }
 
 ///玩家
-class PlayerTank extends DefaultTank {
+class PlayerTank extends DefaultTank implements TankController {
   PlayerTank({required int id, required Offset birthPosition, required TankModel config})
       : bullet = PlayerBullet(tankId: id, activeSize: config.activeSize),
         super(id: id, birthPosition: birthPosition, config: config);
@@ -90,6 +92,29 @@ class PlayerTank extends DefaultTank {
 
   @override
   BaseBullet getBullet() => bullet.copyWith(position: getBulletFirePosition(), angle: getBulletFireAngle());
+
+  @override
+  void bodyAngleChanged(Offset newAngle) {
+    if (newAngle == Offset.zero) {
+      targetBodyAngle = null;
+    } else {
+      targetBodyAngle = newAngle.direction; //范围（pi,-pi）
+    }
+  }
+
+  @override
+  void fireButtonTriggered() {
+    fire();
+  }
+
+  @override
+  void turretAngleChanged(Offset newAngle) {
+    if (newAngle == Offset.zero) {
+      targetTurretAngle = null;
+    } else {
+      targetTurretAngle = newAngle.direction;
+    }
+  }
 }
 
 ///可实例化的tank模型
@@ -107,14 +132,32 @@ abstract class DefaultTank extends BaseTank {
     isDead = false;
   }
 
+  /**********  射击  ***************/
+  ///子弹
+  final List<BaseBullet> _bullets = [];
+  get bullets => _bullets;
+
+  ///炮弹最大数量
+  final int _maxPlayerBulletNum = 20;
+
+  ///开火
+  @override
+  void fire() {
+    if (_bullets.length < _maxPlayerBulletNum) {
+      _bullets.add(getBullet());
+    }
+  }
+
   @override
   void onGameResize(Vector2 size) {
     config.activeSize = size.toSize();
+    _bullets.onGameResize(size);
     super.onGameResize(size);
   }
 
   @override
   void render(Canvas canvas) {
+    _bullets.render(canvas);
     if (!isStandBy || isDead) {
       return;
     }
@@ -128,12 +171,14 @@ abstract class DefaultTank extends BaseTank {
 
   @override
   void update(double dt) {
+    _bullets.update(dt);
     if (!isStandBy || isDead) {
       return;
     }
     rotateBody(dt);
     rotateTurret(dt);
     move(dt);
+    _bullets.removeWhere((element) => element.dismissible);
   }
 
   @override

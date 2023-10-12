@@ -46,7 +46,7 @@ abstract class ComputerTankSpawnerTrigger<T extends ComputerTank> {
 }
 
 ///电脑生成器
-/// * [TankTheater]下，tank生成的直接参与者，负责电脑的随机生成。
+/// * [PlayerTankTheater]下，tank生成的直接参与者，负责电脑的随机生成。
 ///
 /// * [spawners]为具体[ComputerTank]的生成流水线，见[GreenTankFlowLine]和[SandTankFlowLine]
 ///   流水线内部的[ComputerTank]产出由[TankFactory]负责。

@@ -121,6 +121,9 @@ abstract class BaseTank extends WindowComponent {
   /// [t] 过渡时间-> 理论值16.66ms
   void rotateTurret(double t);
 
+  ///开火
+  void fire();
+
   ///隶属于的坦克
   int getTankId();
 
