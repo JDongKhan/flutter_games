@@ -10,4 +10,10 @@ import 'theater/player_tank_theater.dart';
 /// * 继承于[FlameGame]
 /// * 所混入的类 : [ComputerTankTheater]、[PlayerTankTheater]、[DecorationTheater]、[GameJudge]、[MapTheater]
 /// * 用于拓展[TankGame]的场景内容和[Sprite]交互行为，具体见各自的注释。
-class TankGame extends FlameGame with ComputerTankTheater, PlayerTankTheater, DecorationTheater, GameJudge, MapTheater {}
+class TankGame extends FlameGame with HasCollisionDetection, ComputerTankTheater, PlayerTankTheater, DecorationTheater, GameJudge, MapTheater {
+  ///游戏难度
+  int level = 0;
+
+  ///游戏结束
+  bool gameOver = false;
+}

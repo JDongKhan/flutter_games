@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
-import 'package:flutter_tank_game/data/data_manager.dart';
 import 'component/tank/default_tank.dart';
 import 'controller/control_panel_widget.dart';
 import 'game/tank_game.dart';
@@ -18,7 +17,7 @@ class GamePage extends StatelessWidget {
     final TankGame tankGame = TankGame();
     tankGame.pauseWhenBackgrounded = true;
     return FutureBuilder<List<ui.Image>>(
-      future: loadAssets(),
+      future: _loadAssets(),
       initialData: const [],
       builder: (ctx, snapShot) {
         if (snapShot.data?.isEmpty ?? true) {
@@ -96,8 +95,9 @@ class GamePage extends StatelessWidget {
     );
   }
 
-  Future<List<ui.Image>> loadAssets() {
+  Future<List<ui.Image>> _loadAssets() {
     return Flame.images.loadAll([
+      'obstacle.png',
       'new_map.webp',
       'tank/t_body_blue.webp',
       'tank/t_turret_blue.webp',
@@ -133,7 +133,6 @@ class _MenuState extends State<Menu> {
   int _score = 0;
   @override
   void initState() {
-    DataManager.instance.addListener(_updateInfo);
     _listenerScore();
     super.initState();
   }
@@ -147,13 +146,8 @@ class _MenuState extends State<Menu> {
     });
   }
 
-  void _updateInfo() {
-    setState(() {});
-  }
-
   @override
   void dispose() {
-    DataManager.instance.removeListener(_updateInfo);
     super.dispose();
   }
 
@@ -172,7 +166,7 @@ class _MenuState extends State<Menu> {
               height: 30,
             ),
             onPanDown: (detail) {
-              if (DataManager.instance.gameOver) {
+              if (widget.game.gameOver) {
                 return;
               }
               widget.game.paused = !widget.game.paused;

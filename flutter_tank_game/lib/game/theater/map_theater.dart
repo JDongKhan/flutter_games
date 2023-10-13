@@ -1,13 +1,12 @@
-import 'dart:ui';
+import 'dart:async';
 
+import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flame/image_composition.dart';
 import 'package:flame/sprite.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_tank_game/component/background/background.dart';
-import 'package:flutter_tank_game/utils/extension.dart';
-import 'package:vector_math/vector_math_64.dart';
 
-import '../../component/explosion/orange_explosion.dart';
+import '../../component/obstacle/my_obstacle.dart';
 
 ///地图
 mixin MapTheater on FlameGame {
@@ -16,6 +15,8 @@ mixin MapTheater on FlameGame {
   @override
   void onMount() {
     add(_bg);
+    //添加障碍物
+    add(MyObstacle(Vector2(100, 100)));
     super.onMount();
   }
 }

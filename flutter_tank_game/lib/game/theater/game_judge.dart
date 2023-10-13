@@ -1,16 +1,10 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/timer.dart';
-import 'package:flutter_tank_game/data/data_manager.dart';
-
 import '../../component/tank/default_tank.dart';
-import '../../utils/extension.dart';
-
-import '../../component/tank/tank_factory.dart';
-import '../../controller/controller_listener.dart';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 
+import '../tank_game.dart';
 import 'computer_tank_theater.dart';
 import 'decoration_theater.dart';
 import 'player_tank_theater.dart';
@@ -24,7 +18,8 @@ mixin GameJudge on FlameGame, PlayerTankTheater, ComputerTankTheater, Decoration
   @override
   void update(double dt) {
     super.update(dt);
-    if (aliveComputers.length < (4 + DataManager.instance.level)) {
+    TankGame game = this as TankGame;
+    if (aliveComputers.length < (4 + game.level)) {
       randomSpanTank();
     }
 

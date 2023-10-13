@@ -2,15 +2,15 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
-import 'package:flutter_tank_game/data/data_manager.dart';
 
 import '../../controller/controller_listener.dart';
+import '../../game/tank_game.dart';
 import 'base_tank.dart';
 import 'bullet/bullet.dart';
 import 'tank_model.dart';
 
 ///电脑
-class ComputerTank extends DefaultTank {
+class ComputerTank extends DefaultTank with HasGameRef {
   factory ComputerTank.green({
     required int id,
     required Offset birthPosition,
@@ -64,7 +64,8 @@ class ComputerTank extends DefaultTank {
 
   @override
   void onMount() {
-    double t = 1 / (DataManager.instance.level + 1);
+    TankGame tankGame = gameRef as TankGame;
+    double t = 1 / (tankGame.level + 1);
     _timer ??= Timer(t, repeat: true, onTick: fire);
     _generateNewTarget();
     super.onMount();
@@ -104,7 +105,7 @@ class ComputerTank extends DefaultTank {
 }
 
 ///玩家
-class PlayerTank extends DefaultTank with Notifier implements TankController {
+class PlayerTank extends DefaultTank with Notifier, HasGameRef implements TankController {
   PlayerTank({required int id, required Offset birthPosition, required TankModel config})
       : bullet = PlayerBullet(tankId: id, activeSize: config.activeSize),
         super(id: id, birthPosition: birthPosition, config: config);
@@ -120,12 +121,13 @@ class PlayerTank extends DefaultTank with Notifier implements TankController {
   set score(v) {
     _score = v;
     //难度级别
+    TankGame tankGame = gameRef as TankGame;
     if (v > 1000) {
-      DataManager.instance.level = 3;
+      tankGame.level = 3;
     } else if (v > 500) {
-      DataManager.instance.level = 2;
+      tankGame.level = 2;
     } else if (v > 100) {
-      DataManager.instance.level = 1;
+      tankGame.level = 1;
     }
     notifyListeners();
   }

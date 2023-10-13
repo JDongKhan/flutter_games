@@ -12,6 +12,7 @@ class Assets {
   static const String imagesGameResumeNor = 'assets/images/game_resume_nor.png';
   static const String imagesGameResumePressed = 'assets/images/game_resume_pressed.png';
   static const String imagesNewMap = 'assets/images/new_map.webp';
+  static const String imagesObstacle = 'assets/images/obstacle.png';
   static const String tankBulletBlue = 'assets/images/tank/bullet_blue.webp';
   static const String tankBulletGreen = 'assets/images/tank/bullet_green.webp';
   static const String tankBulletSand = 'assets/images/tank/bullet_sand.webp';
