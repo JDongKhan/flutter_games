@@ -116,6 +116,22 @@ class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
     gameRef.add(bullet);
   }
 
+  void flipLeft() {
+    if (!isLeft) {
+      return;
+    }
+    flip(y: true);
+    isLeft = false;
+  }
+
+  void flipRight() {
+    if (isLeft) {
+      return;
+    }
+    flip(y: true);
+    isLeft = true;
+  }
+
   void flip({
     bool x = false,
     bool y = true,
@@ -169,5 +185,20 @@ class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
     lifeComponent.loss(attr, onDied: () {
       removeFromParent();
     });
+  }
+
+  @override
+  void update(double dt) {
+    if (position.x < size.x / 2) {
+      position.x = size.x / 2;
+    } else if (position.x > (game.size.x - size.x / 2)) {
+      position.x = game.size.x - size.x / 2;
+    }
+    if (position.y < size.y / 2) {
+      position.y = size.y / 2;
+    } else if (position.y > (game.size.y - size.y / 2)) {
+      position.y = game.size.y - size.y / 2;
+    }
+    super.update(dt);
   }
 }

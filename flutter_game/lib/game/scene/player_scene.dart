@@ -85,12 +85,14 @@ mixin JoystickScene on PlayerScene, TapDetector {
     // 角色移动
     if (joystick != null && player != null) {
       if (!joystick.delta.isZero()) {
-        Vector2 ds = joystick.relativeDelta * player.attr.speed * dt;
+        double step = (_player?.attr.speed ?? 200) * 10;
+        step = step / 60;
+        Vector2 ds = joystick.relativeDelta * step * dt;
         player.move(ds);
         if (joystick.delta.x < 0) {
-          player.flip();
+          player.flipLeft();
         } else {
-          player.flip();
+          player.flipRight();
         }
       }
 
