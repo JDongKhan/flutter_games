@@ -18,6 +18,10 @@ class Body extends SpriteAnimationComponent with HasGameRef {
   }
 
   void shoot() {
+    int index = animationTicker?.currentIndex ?? 0;
+    if (index > 0) {
+      return;
+    }
     playing = true;
     animationTicker?.reset();
   }

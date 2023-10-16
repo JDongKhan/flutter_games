@@ -2,21 +2,29 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_game/config/config.dart';
 
 import '../body/body.dart';
 import '../bullet/anim_bullet.dart';
 import '../life/life.dart';
 
-class HeroAttr {
-  double life; // 生命值
-  double speed; // 速度
-  double attackSpeed; // 攻击速度
-  double attackRange; // 射程
-  double attack; // 攻击力
-  double crit; // 暴击率
-  double critDamage; // 暴击伤害
+class PlayerAttr {
+  // 生命值
+  double life;
+  //速度  1s的速度  1帧走了多少像素
+  double speed;
+  // 攻击速度
+  double attackSpeed;
+  // 射程
+  double attackRange;
+  // 攻击力
+  double attack;
+  // 暴击率
+  double crit;
+  // 暴击伤害
+  double critDamage;
 
-  HeroAttr({
+  PlayerAttr({
     required this.life,
     required this.speed,
     required this.attackSpeed,
@@ -25,20 +33,41 @@ class HeroAttr {
     required this.crit,
     required this.critDamage,
   });
+
+  PlayerAttr copyWith({
+    double? life,
+    double? speed,
+    double? attackSpeed,
+    double? attackRange,
+    double? attack,
+    double? crit,
+    double? critDamage,
+  }) {
+    return PlayerAttr(
+      life: life ?? this.life,
+      speed: speed ?? this.speed,
+      attackSpeed: attackSpeed ?? this.attackSpeed,
+      attackRange: attackRange ?? this.attackRange,
+      attack: attack ?? this.attack,
+      crit: crit ?? this.crit,
+      critDamage: critDamage ?? this.critDamage,
+    );
+  }
 }
 
-class HeroComponent extends PositionComponent with HasGameRef, CollisionCallbacks {
-  HeroAttr attr;
+class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
+  PlayerAttr attr;
   late Body adventurer;
   late LifeComponent lifeComponent;
   bool isLeft = true;
 
-  // late Sprite bulletSprite;
+  //任务
   late SpriteAnimation bulletAnimation;
 
+  //子弹
   final SpriteAnimation spriteAnimation;
 
-  HeroComponent({
+  Player({
     required initPosition,
     required this.attr,
     required this.spriteAnimation,
@@ -53,15 +82,14 @@ class HeroComponent extends PositionComponent with HasGameRef, CollisionCallback
     lifeComponent = LifeComponent(lifePoint: attr.life, lifeColor: Colors.blue, position: adventurer.position, size: adventurer.size);
     add(adventurer);
     add(lifeComponent);
-    addHitbox();
+    addHitBox();
   }
 
-  void addHitbox() {
-    ShapeHitbox hitbox = RectangleHitbox();
-    hitbox.debugMode = true;
-    add(hitbox);
+  void addHitBox() {
+    add(RectangleHitbox()..debugMode = Config.showOutline);
   }
 
+  ///碰撞检测
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
@@ -121,7 +149,7 @@ class HeroComponent extends PositionComponent with HasGameRef, CollisionCallback
     }
   }
 
-  void toTarget(Vector2 target) {
+  void moveTo(Vector2 target) {
     _checkFlip(target);
     removeAll(children.whereType<MoveEffect>());
     double timeMs = (target - position).length / attr.speed;
@@ -136,7 +164,7 @@ class HeroComponent extends PositionComponent with HasGameRef, CollisionCallback
   }
 
   void loss(
-    HeroAttr attr,
+    PlayerAttr attr,
   ) {
     lifeComponent.loss(attr, onDied: () {
       removeFromParent();

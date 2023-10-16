@@ -1,12 +1,14 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_game/config/config.dart';
 import '../bullet/anim_bullet.dart';
 import '../life/liveable.dart';
-import '../player/hero.dart';
+import '../player/player.dart';
 
 class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable, HasGameRef {
   SpriteAnimation bulletSprite;
-  HeroAttr attr;
+  PlayerAttr attr;
   bool isLeft = false;
   final Vector2 bulletSize;
 
@@ -27,8 +29,16 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
         );
 
   @override
+  Future<void> onLoad() async {
+    _timer = Timer(3, onTick: addBullet, repeat: true);
+    initPaint(lifePoint: attr.life);
+    addHitBox();
+  }
+
+  @override
   void onDied() {
     removeFromParent();
+    debugPrint('怪物死亡了');
   }
 
   @override
@@ -40,6 +50,13 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
   @override
   void update(double dt) {
     super.update(dt);
+    double dx = x;
+    double dy = y;
+    dx -= attr.speed / 60;
+    if (dx < 0) {
+      onDied();
+    }
+    position = Vector2(dx, dy);
     _timer.update(dt);
   }
 
@@ -67,17 +84,8 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
     gameRef.add(bullet);
   }
 
-  @override
-  Future<void> onLoad() async {
-    _timer = Timer(3, onTick: addBullet, repeat: true);
-    initPaint(lifePoint: attr.life);
-    addHitbox();
-  }
-
-  void addHitbox() {
-    ShapeHitbox hitbox = RectangleHitbox();
-    hitbox.debugMode = true;
-    add(hitbox);
+  void addHitBox() {
+    add(RectangleHitbox()..debugMode = Config.showOutline);
   }
 
   @override
@@ -90,5 +98,23 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
 
   void move(Vector2 ds) {
     position.add(ds);
+  }
+
+  Monster copyWith({
+    SpriteAnimation? animation,
+    Vector2? bulletSize,
+    Vector2? size,
+    Vector2? position,
+    SpriteAnimation? bulletSprite,
+    PlayerAttr? attr,
+  }) {
+    return Monster(
+      animation: animation ?? this.animation!,
+      bulletSize: bulletSize ?? this.bulletSize,
+      size: size ?? this.size,
+      position: position ?? this.position,
+      bulletSprite: bulletSprite ?? this.bulletSprite,
+      attr: attr ?? this.attr,
+    );
   }
 }

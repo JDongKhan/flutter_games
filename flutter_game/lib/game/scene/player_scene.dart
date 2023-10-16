@@ -7,35 +7,36 @@ import 'package:flame/palette.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import '../component/player/hero.dart';
+import '../component/player/player.dart';
 
 mixin PlayerScene on FlameGame {
   ///游戏玩家
-  HeroComponent? _player;
-  HeroComponent? get player => _player;
+  Player? _player;
+  Player? get player => _player;
 
   @override
   FutureOr<void> onLoad() async {
     List<Sprite> sprites = [];
+    //人物
     for (int i = 0; i <= 8; i++) {
       sprites.add(await loadSprite('adventurer/adventurer-bow-0$i.png'));
     }
     SpriteAnimation animation = SpriteAnimation.spriteList(sprites, stepTime: 0.1, loop: false);
-
-    final HeroAttr heroAttr = HeroAttr(
+    final PlayerAttr heroAttr = PlayerAttr(
       life: 3000,
-      speed: 100,
-      attackSpeed: 200,
+      speed: 1000,
+      attackSpeed: 500,
       attackRange: 200,
       attack: 50,
       crit: 0.75,
       critDamage: 1.5,
     );
 
+    //子弹
     Sprite bulletSprite = await loadSprite('adventurer/weapon_arrow.png');
     SpriteAnimation bulletAnimation = SpriteAnimation.spriteList([bulletSprite], stepTime: 0.1, loop: false);
 
-    _player = HeroComponent(
+    _player = Player(
       initPosition: size / 2,
       bulletAnimation: bulletAnimation,
       attr: heroAttr,
@@ -110,8 +111,6 @@ mixin JoystickScene on PlayerScene, TapDetector {
   }
 }
 
-const double step = 10;
-
 ///处理键盘事件
 mixin KeyboardScene on PlayerScene, KeyboardEvents {
   ///两种实现方式  这个麻烦
@@ -177,6 +176,9 @@ mixin KeyboardScene on PlayerScene, KeyboardEvents {
     if (event.logicalKey == LogicalKeyboardKey.keyX && isKeyDown) {
       player?.flip(x: true);
     }
+
+    double step = _player?.attr.speed ?? 200;
+    step = step / 60;
     if ((event.logicalKey == LogicalKeyboardKey.arrowUp || event.logicalKey == LogicalKeyboardKey.keyW) && isKeyDown) {
       player?.move(Vector2(0, -step));
     }

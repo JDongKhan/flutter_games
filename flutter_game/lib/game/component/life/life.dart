@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
-import '../player/hero.dart';
+import '../player/player.dart';
 import 'damage_text.dart';
 
 class LifeComponent extends PositionComponent {
@@ -79,7 +79,7 @@ class LifeComponent extends PositionComponent {
 
   final Random _random = Random();
 
-  void loss(HeroAttr attr, {VoidCallback? onDied}) {
+  void loss(PlayerAttr attr, {VoidCallback? onDied}) {
     double point = attr.attack;
     double crit = attr.crit;
     double critDamage = attr.critDamage;

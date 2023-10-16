@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
-import '../player/hero.dart';
+import '../player/player.dart';
 import 'damage_text.dart';
 
 mixin Liveable on PositionComponent {
@@ -36,7 +36,7 @@ mixin Liveable on PositionComponent {
 
   final Random _random = Random();
 
-  void loss(HeroAttr attr) {
+  void loss(PlayerAttr attr) {
     double point = attr.attack;
     double crit = attr.crit;
     double critDamage = attr.critDamage;

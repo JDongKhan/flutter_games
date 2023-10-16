@@ -8,7 +8,7 @@ mixin PanScene on FlameGame, PanDetector, PlayerScene {
   @override
   void onPanEnd(DragEndInfo info) {
     if (_lastPointerPos != null) {
-      player?.toTarget(_lastPointerPos!);
+      player?.moveTo(_lastPointerPos!);
       _lastPointerPos = null;
     }
   }
@@ -22,7 +22,7 @@ mixin PanScene on FlameGame, PanDetector, PlayerScene {
   void onPanDown(DragDownInfo info) {
     Vector2 target = info.eventPosition.global;
     add(TouchIndicator(position: target));
-    player?.toTarget(target);
+    player?.moveTo(target);
   }
 
   double ds = 0;

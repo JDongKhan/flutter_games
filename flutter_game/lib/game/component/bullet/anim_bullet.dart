@@ -2,9 +2,10 @@ import 'dart:math';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flutter_game/config/config.dart';
 
 import '../monster/monster.dart';
-import '../player/hero.dart';
+import '../player/player.dart';
 
 enum BulletType { hero, monster }
 
@@ -12,7 +13,7 @@ class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
   double speed = 200;
   final double maxRange;
   final BulletType type;
-  final HeroAttr attr;
+  final PlayerAttr attr;
   final bool isLeft;
 
   AnimBullet({
@@ -34,13 +35,11 @@ class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
         if (isLeft) angle = pi;
         break;
     }
-    addHitbox();
+    addHitBox();
   }
 
-  void addHitbox() {
-    ShapeHitbox hitbox = RectangleHitbox();
-    hitbox.debugMode = true;
-    add(hitbox);
+  void addHitBox() {
+    add(RectangleHitbox()..debugMode = Config.showOutline);
   }
 
   @override
@@ -49,7 +48,7 @@ class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
     if (type == BulletType.hero && other is Monster) {
       removeFromParent();
     }
-    if (type == BulletType.monster && other is HeroComponent) {
+    if (type == BulletType.monster && other is Player) {
       removeFromParent();
     }
   }
