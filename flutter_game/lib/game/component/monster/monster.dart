@@ -1,5 +1,10 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/extensions.dart';
+import 'package:flame_ext/flame_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_game/config/config.dart';
 import '../bullet/anim_bullet.dart';
@@ -11,7 +16,7 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
   PlayerAttr attr;
   bool isLeft = false;
   final Vector2 bulletSize;
-
+  final Random _random = Random();
   late Timer _timer;
 
   Monster({
@@ -47,17 +52,30 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
     _timer.start();
   }
 
+  int _step = 0;
+  int _randomAngle = 180;
   @override
   void update(double dt) {
     super.update(dt);
-    double dx = x;
-    double dy = y;
-    dx -= attr.speed / 60;
-    if (dx < 0) {
-      onDied();
-    }
-    position = Vector2(dx, dy);
     _timer.update(dt);
+    //随机移动轨迹
+    _step++;
+    if (_step == 100) {
+      _randomAngle = _random.nextRange(-360, 360);
+      _step = 0;
+    }
+    position += Offset.fromDirection(_randomAngle.toDouble() * (pi / 180), attr.speed * dt).toVector2();
+    if (position.x < size.x / 2) {
+      position.x = size.x / 2;
+    } else if (position.x > (game.size.x - size.x / 2)) {
+      position.x = game.size.x - size.x / 2;
+    }
+    if (position.y < size.y / 2) {
+      position.y = size.y / 2;
+    } else if (position.y > (game.size.y - size.y / 2)) {
+      position.y = game.size.y - size.y / 2;
+    }
+    isLeft = position.x < game.size.x / 2;
   }
 
   @override

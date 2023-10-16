@@ -25,8 +25,8 @@ mixin PlayerScene on FlameGame {
     final PlayerAttr heroAttr = PlayerAttr(
       life: 3000,
       speed: 1000,
-      attackSpeed: 500,
-      attackRange: 200,
+      attackSpeed: 1000,
+      attackRange: 500,
       attack: 50,
       crit: 0.75,
       critDamage: 1.5,
