@@ -1,8 +1,4 @@
-import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/sprite.dart';
-
-import '../component/life/line.dart';
 import 'manager/monster_area.dart';
 
 ///怪兽

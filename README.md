@@ -14,3 +14,8 @@
 ### flutter_tank_game:坦克大战
 
 ![demo png](tank.gif "tank")
+
+
+### flutter_game:
+
+![demo png](game.gif "game")
