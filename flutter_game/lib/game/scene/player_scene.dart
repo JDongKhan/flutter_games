@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -21,21 +23,20 @@ mixin PlayerScene on FlameGame {
     for (int i = 0; i <= 8; i++) {
       sprites.add(await loadSprite('adventurer/adventurer-bow-0$i.png'));
     }
-    SpriteAnimation animation = SpriteAnimation.spriteList(sprites, stepTime: 0.1, loop: false);
     final PlayerAttr heroAttr = PlayerAttr(
       life: 3000,
       speed: 1000,
-      attackSpeed: 1000,
+      bulletSpeed: 500,
+      attackSpeed: 200,
       attackRange: 500,
       attack: 50,
       crit: 0.75,
       critDamage: 1.5,
     );
-
+    SpriteAnimation animation = SpriteAnimation.spriteList(sprites, stepTime: 10 / heroAttr.attackSpeed, loop: false);
     //子弹
     Sprite bulletSprite = await loadSprite('adventurer/weapon_arrow.png');
     SpriteAnimation bulletAnimation = SpriteAnimation.spriteList([bulletSprite], stepTime: 0.1, loop: false);
-
     _player = Player(
       initPosition: size / 2,
       bulletAnimation: bulletAnimation,
@@ -53,10 +54,13 @@ mixin JoystickScene on PlayerScene, TapDetector {
   ///操作杆
   JoystickComponent? joystick;
 
+  ButtonComponent? fight;
+
   @override
   FutureOr<void> onLoad() {
     if (Platform.isIOS || Platform.isAndroid) {
       _addJoystick();
+      _addFightButton();
     }
     return super.onLoad();
   }
@@ -70,7 +74,19 @@ mixin JoystickScene on PlayerScene, TapDetector {
       background: CircleComponent(radius: 60, paint: backgroundPaint),
       margin: const EdgeInsets.only(left: 40, bottom: 40),
     );
-    add(joystick!);
+    camera.viewport.add(joystick!);
+  }
+
+  void _addFightButton() {
+    fight = HudButtonComponent(
+      button: CircleComponent(radius: 35, paint: BasicPalette.white.withAlpha(240).paint()),
+      buttonDown: CircleComponent(radius: 35, paint: BasicPalette.white.withAlpha(100).paint()),
+      margin: const EdgeInsets.only(right: 25, bottom: 50),
+      onPressed: () {
+        _player?.shoot();
+      },
+    );
+    camera.viewport.add(fight!);
   }
 
   @override

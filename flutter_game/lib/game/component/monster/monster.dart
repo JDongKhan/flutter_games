@@ -91,7 +91,7 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
       type: BulletType.monster,
       animation: bulletSprite,
       maxRange: attr.attackRange,
-      speed: attr.attackSpeed,
+      speed: attr.bulletSpeed,
       isLeft: isLeft,
     );
     bullet.size = bulletSize;

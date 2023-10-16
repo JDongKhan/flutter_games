@@ -15,6 +15,9 @@ class PlayerAttr {
   double speed;
   // 攻击速度
   double attackSpeed;
+
+  // 子弹飞行速度
+  double bulletSpeed;
   // 射程
   double attackRange;
   // 攻击力
@@ -32,11 +35,13 @@ class PlayerAttr {
     required this.attack,
     required this.crit,
     required this.critDamage,
+    required this.bulletSpeed,
   });
 
   PlayerAttr copyWith({
     double? life,
     double? speed,
+    double? bulletSpeed,
     double? attackSpeed,
     double? attackRange,
     double? attack,
@@ -46,6 +51,7 @@ class PlayerAttr {
     return PlayerAttr(
       life: life ?? this.life,
       speed: speed ?? this.speed,
+      bulletSpeed: bulletSpeed ?? this.bulletSpeed,
       attackSpeed: attackSpeed ?? this.attackSpeed,
       attackRange: attackRange ?? this.attackRange,
       attack: attack ?? this.attack,
@@ -105,7 +111,7 @@ class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
       attr: attr,
       type: BulletType.hero,
       maxRange: attr.attackRange,
-      speed: attr.attackSpeed,
+      speed: attr.bulletSpeed,
       isLeft: isLeft,
     );
     bullet.size = Vector2(32, 32);
@@ -183,6 +189,7 @@ class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
     PlayerAttr attr,
   ) {
     lifeComponent.loss(attr, onDied: () {
+      debugPrint('玩家已死亡');
       removeFromParent();
     });
   }

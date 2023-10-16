@@ -29,7 +29,7 @@ class MonsterArea extends PositionComponent with HasGameRef {
     List<Sprite> sprites = stoneSheet.getRowSprites(row: 0, start: 5, count: 4);
     SpriteAnimation animation = SpriteAnimation.spriteList(sprites, stepTime: 1 / 10, loop: true);
     Vector2 monsterSize = Vector2(32, 48);
-    final PlayerAttr heroAttr = PlayerAttr(life: 200, speed: 0, attackSpeed: 200, attackRange: 400, attack: 20, crit: 0, critDamage: 1);
+    final PlayerAttr heroAttr = PlayerAttr(life: 200, speed: 0, bulletSpeed: 200, attackSpeed: 200, attackRange: 400, attack: 20, crit: 0, critDamage: 1);
 
     List<Sprite> sprites2 = [];
     for (int i = 1; i <= 4; i++) {
@@ -56,7 +56,7 @@ class MonsterArea extends PositionComponent with HasGameRef {
     SpriteAnimation animation = SpriteAnimation.spriteList(bossSheet.getSprites(), stepTime: 1 / 24, loop: true);
     Vector2 monsterSize = Vector2(64, 64);
 
-    final PlayerAttr heroAttr = PlayerAttr(life: 4000, speed: 100, attackSpeed: 200, attackRange: 600, attack: 100, crit: 0.5, critDamage: 1.5);
+    final PlayerAttr heroAttr = PlayerAttr(life: 4000, speed: 100, bulletSpeed: 200, attackSpeed: 200, attackRange: 600, attack: 100, crit: 0.5, critDamage: 1.5);
     Monster monster = Monster(bulletSize: Vector2(720 / 4, 658 / 4), attr: heroAttr, bulletSprite: bossBullet, animation: animation, size: monsterSize, position: Vector2.zero());
     return monster;
   }
@@ -68,7 +68,6 @@ class MonsterArea extends PositionComponent with HasGameRef {
     Monster initMonster = monsters[0];
     Monster monster = initMonster.copyWith(attr: initMonster.attr.copyWith(speed: speed));
     monster.position = Vector2(x, y);
-    _newSoldier++;
     return monster;
   }
 
@@ -76,7 +75,7 @@ class MonsterArea extends PositionComponent with HasGameRef {
     double x = game.size.x;
     double y = _random.nextInt(game.size.y.toInt()).toDouble();
     double speed = _random.nextRange(100, 200).toDouble();
-    Monster initMonster = monsters[0];
+    Monster initMonster = monsters[1];
     Monster monster = initMonster.copyWith(attr: initMonster.attr.copyWith(speed: speed));
     monster.position = Vector2(x, y);
     return monster;
@@ -97,9 +96,10 @@ class MonsterArea extends PositionComponent with HasGameRef {
   @override
   void update(double dt) {
     if (children.length < 4) {
+      _newSoldier++;
       add(generateNewMonster());
     }
-    if (_newSoldier == 40) {
+    if (_newSoldier == 2) {
       _newSoldier = 0;
       add(generateNewBoss());
     }
