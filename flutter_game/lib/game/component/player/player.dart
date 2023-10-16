@@ -7,6 +7,7 @@ import 'package:flutter_game/config/config.dart';
 import '../body/body.dart';
 import '../bullet/anim_bullet.dart';
 import '../life/life.dart';
+import '../wall/wall.dart';
 
 class PlayerAttr {
   // 生命值
@@ -101,6 +102,20 @@ class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
     super.onCollision(intersectionPoints, other);
     if (other is AnimBullet && other.type == BulletType.monster) {
       loss(other.attr);
+    } else if (other is Wall && intersectionPoints.length == 2) {
+      //检测障碍物
+      var pointA = intersectionPoints.elementAt(0);
+      var pointB = intersectionPoints.elementAt(1);
+      final mid = (pointA + pointB) / 2;
+      final collisionVector = absoluteCenter - mid;
+      if (pointA.x == pointB.x || pointA.y == pointB.y) {
+        // Hitting a side without touching a corner
+        double penetrationDepth = (size.x / 2) - collisionVector.length;
+        collisionVector.normalize();
+        position += collisionVector.scaled(penetrationDepth);
+      } else {
+        position += cornerBumpDistance(collisionVector, pointA, pointB);
+      }
     }
   }
 

@@ -73,7 +73,7 @@ mixin JoystickScene on PlayerScene, TapDetector {
       background: CircleComponent(radius: 60, paint: backgroundPaint),
       margin: const EdgeInsets.only(left: 40, bottom: 40),
     );
-    camera.viewport.add(joystick!);
+    add(joystick!);
   }
 
   void _addFightButton() {

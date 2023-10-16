@@ -6,6 +6,7 @@ import 'package:flutter_game/config/config.dart';
 
 import '../monster/monster.dart';
 import '../player/player.dart';
+import '../wall/wall.dart';
 
 enum BulletType { hero, monster }
 
@@ -49,6 +50,10 @@ class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
       removeFromParent();
     }
     if (type == BulletType.monster && other is Player) {
+      removeFromParent();
+    }
+    if (other is Wall && intersectionPoints.length == 2) {
+      //检测障碍物
       removeFromParent();
     }
   }

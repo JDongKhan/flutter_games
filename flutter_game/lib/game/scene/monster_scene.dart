@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flame/game.dart';
 import 'manager/monster_area.dart';
 
@@ -6,9 +8,9 @@ mixin MonsterScene on FlameGame {
   late MonsterArea monsterArea;
 
   @override
-  Future<void> onLoad() async {
+  FutureOr<void> onLoad() async {
     monsterArea = MonsterArea();
     add(monsterArea);
-    super.onLoad();
+    return super.onLoad();
   }
 }

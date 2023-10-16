@@ -10,6 +10,7 @@ import 'package:flutter_game/config/config.dart';
 import '../bullet/anim_bullet.dart';
 import '../life/liveable.dart';
 import '../player/player.dart';
+import '../wall/wall.dart';
 
 class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable, HasGameRef {
   SpriteAnimation bulletSprite;
@@ -111,6 +112,20 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
     super.onCollision(intersectionPoints, other);
     if (other is AnimBullet && other.type == BulletType.hero) {
       loss(other.attr);
+    } else if (other is Wall && intersectionPoints.length == 2) {
+      //检测障碍物
+      var pointA = intersectionPoints.elementAt(0);
+      var pointB = intersectionPoints.elementAt(1);
+      final mid = (pointA + pointB) / 2;
+      final collisionVector = absoluteCenter - mid;
+      if (pointA.x == pointB.x || pointA.y == pointB.y) {
+        // Hitting a side without touching a corner
+        double penetrationDepth = (size.x / 2) - collisionVector.length;
+        collisionVector.normalize();
+        position += collisionVector.scaled(penetrationDepth);
+      } else {
+        position += cornerBumpDistance(collisionVector, pointA, pointB);
+      }
     }
   }
 
