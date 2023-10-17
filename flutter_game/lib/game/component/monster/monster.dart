@@ -100,7 +100,7 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
     bullet.priority = 1;
     priority = 2;
     bullet.position = position - Vector2(0, size.y / 2);
-    gameRef.add(bullet);
+    gameRef.world.add(bullet);
   }
 
   void addHitBox() {

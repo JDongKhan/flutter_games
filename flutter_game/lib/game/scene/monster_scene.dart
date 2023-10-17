@@ -10,7 +10,7 @@ mixin MonsterScene on FlameGame {
   @override
   FutureOr<void> onLoad() async {
     monsterArea = MonsterArea();
-    add(monsterArea);
+    world.add(monsterArea);
     return super.onLoad();
   }
 }

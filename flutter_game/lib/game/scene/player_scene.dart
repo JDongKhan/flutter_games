@@ -43,7 +43,9 @@ mixin PlayerScene on FlameGame {
       spriteAnimation: animation,
       size: Vector2(50, 37),
     );
-    add(_player!);
+    world.add(_player!);
+    //跟随玩家
+    camera.follow(_player!);
     return super.onLoad();
   }
 }

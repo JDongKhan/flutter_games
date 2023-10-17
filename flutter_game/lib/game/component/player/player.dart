@@ -134,7 +134,7 @@ class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
     bullet.priority = 1;
     priority = 2;
     bullet.position = position - Vector2(0, -3);
-    gameRef.add(bullet);
+    gameRef.world.add(bullet);
   }
 
   void flipLeft() {
