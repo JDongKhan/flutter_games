@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/input.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_ext/flame_ext.dart';
 import 'package:flutter/material.dart';

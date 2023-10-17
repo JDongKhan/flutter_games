@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
@@ -23,7 +25,7 @@ class GamePage extends StatelessWidget {
         }
         return GameWidget(
           game: game,
-          initialActiveOverlays: const ['PauseMenu'],
+          initialActiveOverlays: const [Menu.menuId],
           loadingBuilder: (c) {
             return _buildLoading();
           },
@@ -31,8 +33,11 @@ class GamePage extends StatelessWidget {
             return _buildError(error);
           },
           overlayBuilderMap: {
-            'PauseMenu': (context, g) {
+            Menu.menuId: (context, g) {
               return Menu(game: game);
+            },
+            PauseMenu.menuId: (context, g) {
+              return PauseMenu(game: game);
             },
           },
         );
@@ -95,7 +100,8 @@ class GamePage extends StatelessWidget {
 
 ///菜单和得分信息
 class Menu extends StatefulWidget {
-  final FlameGame game;
+  static const String menuId = 'Menu';
+  final JDGame game;
   const Menu({
     super.key,
     required this.game,
@@ -143,7 +149,9 @@ class _MenuState extends State<Menu> {
             ),
             onPanDown: (detail) {
               widget.game.paused = !widget.game.paused;
-              setState(() {});
+              setState(() {
+                widget.game.pausedGameState();
+              });
             },
           ),
           const SizedBox(
@@ -156,5 +164,68 @@ class _MenuState extends State<Menu> {
         ],
       ),
     );
+  }
+}
+
+///菜单和得分信息
+class PauseMenu extends StatefulWidget {
+  static const String menuId = 'PauseMenu';
+  final JDGame game;
+  const PauseMenu({
+    super.key,
+    required this.game,
+  });
+
+  @override
+  State<PauseMenu> createState() => _PauseMenuState();
+}
+
+class _PauseMenuState extends State<PauseMenu> {
+  @override
+  void initState() {
+    _listenerScore();
+    super.initState();
+  }
+
+  void _listenerScore() {}
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Center(
+        child: Container(
+          color: Colors.black54,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Wrap(
+            spacing: 20,
+            direction: Axis.vertical,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              const Text('游戏暂停', style: TextStyle(color: Colors.white)),
+              ElevatedButton(onPressed: _continue, child: const Text('继续游戏')),
+              ElevatedButton(onPressed: _restart, child: const Text('重新开始')),
+              ElevatedButton(onPressed: _exit, child: const Text('退出游戏'))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _restart() {}
+
+  void _continue() {
+    widget.game.resumeGameState();
+  }
+
+  void _exit() {
+    exit(0);
   }
 }
