@@ -13,7 +13,7 @@ mixin MapScene on FlameGame {
   late SpriteAnimation stoneBullet;
   late Player player;
   @override
-  Future<void> onLoad() async {
+  FutureOr<void> onLoad() async {
     Background background = Background();
     add(background);
     player = Player();
@@ -25,6 +25,7 @@ mixin MapScene on FlameGame {
     }
 
     stoneBullet = SpriteAnimation.spriteList(sprites, stepTime: 0.1);
+    return super.onLoad();
   }
 
   void onTap() {

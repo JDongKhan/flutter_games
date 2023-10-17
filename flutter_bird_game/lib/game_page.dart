@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'demo/camera_component_example.dart';
 import 'demo/camera_component_properties_example.dart';
 import 'demo/camera_follow_and_world_bounds.dart';
+import 'game/game.dart';
 import 'theme/theme_controller.dart';
 import 'theme/theme_widget.dart';
 
@@ -12,7 +14,7 @@ class GamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FlameGame game = CameraComponentPropertiesExample();
+    final FlameGame game = BirdGame();
     game.pauseWhenBackgrounded = true;
     return FutureBuilder<List<ui.Image>>(
       future: _loadAssets(),

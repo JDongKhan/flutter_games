@@ -3,19 +3,10 @@ import 'dart:async';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
-enum BulletType { hero, monster }
-
-class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
-  double speed = 200;
-  final double maxRange;
-
-  AnimBullet({
+class Bird extends SpriteAnimationComponent with CollisionCallbacks {
+  Bird({
     required SpriteAnimation animation,
-    required this.maxRange,
-    required this.speed,
   }) : super(animation: animation);
-
-  double _length = 0;
 
   @override
   FutureOr<void> onLoad() {
@@ -23,21 +14,21 @@ class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
     return super.onLoad();
   }
 
+  double speed = 100;
+
   @override
   void update(double dt) {
     super.update(dt);
-    Vector2 ds = Vector2(1, 0) * speed * dt;
-    _length += ds.length;
+    Vector2 ds = Vector2(-1, 0) * speed * dt;
     position.add(ds);
-    if (_length > maxRange) {
-      _length = 0;
+    if (position.x < 0) {
       removeFromParent();
     }
   }
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    print('碰撞了子弹');
+    print('碰撞了鸟');
     super.onCollision(intersectionPoints, other);
   }
 }

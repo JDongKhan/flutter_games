@@ -1,10 +1,9 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter_bird_game/utils/sprite_sheet_ext.dart';
 
-class Player extends SpriteAnimationComponent with HasGameRef {
+class Player extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
   Player() : super(size: Vector2(320, 160), anchor: Anchor.center);
 
   @override
@@ -25,5 +24,13 @@ class Player extends SpriteAnimationComponent with HasGameRef {
       loop: true,
     );
     position = gameRef.size / 2;
+    add(RectangleHitbox()..debugMode = true);
+    return super.onLoad();
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    print('碰撞了飞机');
+    super.onCollision(intersectionPoints, other);
   }
 }
