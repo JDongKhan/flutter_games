@@ -7,8 +7,9 @@ import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/services.dart';
 
-class CameraFollowAndWorldBoundsExample extends FlameGame
-    with HasKeyboardHandlerComponents {
+Vector2 mapSize = Vector2(1500, 30);
+
+class CameraFollowAndWorldBoundsExample extends FlameGame with HasKeyboardHandlerComponents {
   static const description = ''' 
     This example demonstrates camera following the player, but also obeying the
     world bounds (which are set up to leave a small margin around the visible
@@ -18,22 +19,31 @@ class CameraFollowAndWorldBoundsExample extends FlameGame
     the player horizontally, but not jump with the player.
   ''';
 
+  Player? player;
   @override
   Future<void> onLoad() async {
-    final player = Player()..position = Vector2(250, 0);
+    player = Player()
+      ..position = Vector2(0, 0)
+      ..debugMode = true;
     camera
-      ..viewfinder.visibleGameSize = Vector2(400, 100)
-      ..follow(player, horizontalOnly: true)
-      ..setBounds(Rectangle.fromLTRB(190, -50, 810, 50));
+      ..viewfinder.visibleGameSize = Vector2(size.x / 2 + player!.size.x / 2, size.y / 2)
+      ..follow(player!, horizontalOnly: true)
+      ..setBounds(Rectangle.fromLTRB(size.x / 4, -50, mapSize.x - size.x / 4, 50));
     world.add(Ground());
-    world.add(player);
+    world.add(player!);
+  }
+
+  @override
+  void update(double dt) {
+    player?.position = Vector2((player?.position.x ?? 0) + 1, (player?.position.y ?? 0));
+    super.update(dt);
   }
 }
 
 class Ground extends PositionComponent {
   Ground()
       : pebbles = [],
-        super(size: Vector2(1000, 30)) {
+        super(size: mapSize) {
     final random = Random();
     for (var i = 0; i < 25; i++) {
       pebbles.add(
@@ -120,8 +130,8 @@ class Player extends PositionComponent with KeyboardHandler {
     if (position.x < 0) {
       position.x = 0;
     }
-    if (position.x > 1000) {
-      position.x = 1000;
+    if (position.x > mapSize.x) {
+      position.x = mapSize.x;
     }
   }
 
@@ -144,12 +154,9 @@ class Player extends PositionComponent with KeyboardHandler {
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     final isKeyDown = event is RawKeyDownEvent;
-    final keyLeft = (event.logicalKey == LogicalKeyboardKey.arrowLeft) ||
-        (event.logicalKey == LogicalKeyboardKey.keyA);
-    final keyRight = (event.logicalKey == LogicalKeyboardKey.arrowRight) ||
-        (event.logicalKey == LogicalKeyboardKey.keyD);
-    final keyUp = (event.logicalKey == LogicalKeyboardKey.arrowUp) ||
-        (event.logicalKey == LogicalKeyboardKey.keyW);
+    final keyLeft = (event.logicalKey == LogicalKeyboardKey.arrowLeft) || (event.logicalKey == LogicalKeyboardKey.keyA);
+    final keyRight = (event.logicalKey == LogicalKeyboardKey.arrowRight) || (event.logicalKey == LogicalKeyboardKey.keyD);
+    final keyUp = (event.logicalKey == LogicalKeyboardKey.arrowUp) || (event.logicalKey == LogicalKeyboardKey.keyW);
 
     if (isKeyDown) {
       if (keyLeft) {
@@ -161,10 +168,8 @@ class Player extends PositionComponent with KeyboardHandler {
         nJumpsLeft -= 1;
       }
     } else {
-      final hasLeft = keysPressed.contains(LogicalKeyboardKey.arrowLeft) ||
-          keysPressed.contains(LogicalKeyboardKey.keyA);
-      final hasRight = keysPressed.contains(LogicalKeyboardKey.arrowRight) ||
-          keysPressed.contains(LogicalKeyboardKey.keyD);
+      final hasLeft = keysPressed.contains(LogicalKeyboardKey.arrowLeft) || keysPressed.contains(LogicalKeyboardKey.keyA);
+      final hasRight = keysPressed.contains(LogicalKeyboardKey.arrowRight) || keysPressed.contains(LogicalKeyboardKey.keyD);
       if (hasLeft && hasRight) {
         // Leave the current speed unchanged
       } else if (hasLeft) {

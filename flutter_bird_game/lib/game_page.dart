@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
-import 'game/camera_follow_and_world_bounds.dart';
-import 'game/fixed_resolution_example.dart';
-import 'game/follow_component_example.dart';
-import 'game/game.dart';
-import 'game/zoom_example.dart';
+import 'demo/camera_component_properties_example.dart';
+import 'demo/camera_follow_and_world_bounds.dart';
 import 'theme/theme_controller.dart';
 import 'theme/theme_widget.dart';
 
@@ -15,7 +12,7 @@ class GamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FlameGame game = FollowComponentExample(viewportResolution: Vector2(500, 500));
+    final FlameGame game = CameraComponentPropertiesExample();
     game.pauseWhenBackgrounded = true;
     return FutureBuilder<List<ui.Image>>(
       future: _loadAssets(),

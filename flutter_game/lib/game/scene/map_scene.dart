@@ -20,24 +20,15 @@ mixin MapScene on FlameGame {
     SpriteAnimation animation = SpriteAnimation.spriteList(sprites, stepTime: 1 / 10, loop: true);
     world.add(Wall(spriteAnimation: animation, size: Vector2(28, 25), position: Vector2(200, 200)));
 
-    //地图背景
-    final buttonComponent = ButtonComponent(
-      button: RectangleComponent(
-        size: size,
-        paint: Paint()
-          ..color = Colors.orange
-          ..style = PaintingStyle.stroke,
-      ),
-      buttonDown: RectangleComponent(
-        size: size,
-        paint: Paint()
-          ..color = Colors.orange
-          ..style = PaintingStyle.stroke,
-      ),
-      position: Vector2(0, 0),
-      onPressed: () {},
+    //地图背景边框
+    final borderComponent = RectangleComponent.fromRect(
+      Rect.zero,
+      paint: Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.25
+        ..color = const Color(0xaaffff00),
     );
-    world.add(buttonComponent);
+    world.add(borderComponent);
     return;
   }
 }

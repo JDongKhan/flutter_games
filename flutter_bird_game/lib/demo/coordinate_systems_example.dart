@@ -46,7 +46,7 @@ class CoordinateSystemsExample extends FlameGame with MultiTouchTapDetector, Mul
           RectangleComponent(
             position: position,
             size: rectangleSize,
-          ),
+          )..debugMode = true,
       ],
     );
   }
@@ -117,6 +117,7 @@ class CoordinateSystemsExample extends FlameGame with MultiTouchTapDetector, Mul
       'Global: ${info.eventPosition.global}',
       'Widget: ${info.eventPosition.widget}',
       'Camera: ${camera.viewfinder.position}',
+      'Map: ${camera.viewfinder.globalToLocal(info.eventPosition.global)}',
       if (info is DragUpdateInfo) ...[
         'Delta',
         'Global: ${info.delta.global}',
