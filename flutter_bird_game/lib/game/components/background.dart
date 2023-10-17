@@ -13,10 +13,10 @@ class Background extends ParallaxComponent with HasGameRef {
   }
 
   final _layersMeta = {
-    'parallax/bg.png': 1.0,
-    'parallax/mountain-far.png': 1.5,
-    'parallax/mountains.png': 2.3,
-    'parallax/trees.png': 3.8,
+    'parallax/bg.png': 0.1,
+    'parallax/mountain-far.png': 0.5,
+    'parallax/mountains.png': 1.0,
+    'parallax/trees.png': 2.0,
     'parallax/foreground-trees.png': 6.6,
   };
 
@@ -30,21 +30,21 @@ class Background extends ParallaxComponent with HasGameRef {
       result.add(layer);
     }
 
-    final ParallaxLayer airplaneLayer = await gameRef.loadParallaxLayer(
-      ParallaxAnimationData(
-        'parallax/airplane.png',
-        SpriteAnimationData.sequenced(
-          amount: 4,
-          stepTime: 0.2,
-          textureSize: Vector2(320, 160),
-        ),
-      ),
-      repeat: ImageRepeat.noRepeat,
-      velocityMultiplier: Vector2.zero(),
-      fill: LayerFill.none,
-      alignment: Alignment.center,
-    );
-    result.add(airplaneLayer);
+    // final ParallaxLayer airplaneLayer = await gameRef.loadParallaxLayer(
+    //   ParallaxAnimationData(
+    //     'parallax/airplane.png',
+    //     SpriteAnimationData.sequenced(
+    //       amount: 4,
+    //       stepTime: 0.2,
+    //       textureSize: Vector2(320, 160),
+    //     ),
+    //   ),
+    //   repeat: ImageRepeat.noRepeat,
+    //   velocityMultiplier: Vector2.zero(),
+    //   fill: LayerFill.none,
+    //   alignment: Alignment.center,
+    // );
+    // result.add(airplaneLayer);
     return result;
   }
 }

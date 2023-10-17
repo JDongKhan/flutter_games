@@ -19,7 +19,7 @@ class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
 
   @override
   FutureOr<void> onLoad() {
-    add(RectangleHitbox()..debugMode = true);
+    add(RectangleHitbox()..debugMode = false);
     return super.onLoad();
   }
 

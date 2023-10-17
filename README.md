@@ -15,6 +15,9 @@
 
 ![demo png](tank.gif "tank")
 
+### flutter_bird_game: 
+
+![demo png](bird.gif "bird")
 
 ### flutter_game:
 

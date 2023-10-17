@@ -1,31 +1,36 @@
+import 'dart:math';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
-import 'package:flutter_bird_game/utils/sprite_sheet_ext.dart';
+import 'anim_bullet.dart';
 
 class Player extends SpriteAnimationComponent with HasGameRef, CollisionCallbacks {
-  Player() : super(size: Vector2(320, 160), anchor: Anchor.center);
+  final SpriteAnimation stoneBullet;
+  Player({required SpriteAnimation spriteAnimation, required this.stoneBullet}) : super(animation: spriteAnimation, size: Vector2(200, 100), anchor: Anchor.center);
 
   @override
   Future<void> onLoad() async {
-    const String src = 'parallax/airplane.png';
-    await gameRef.images.load(src);
-    var image = gameRef.images.fromCache(src);
-    SpriteSheet bossSheet = SpriteSheet.fromColumnsAndRows(
-      image: image,
-      columns: 4,
-      rows: 1,
-    );
-
-    List<Sprite> sprites = bossSheet.getSprites();
-    animation = SpriteAnimation.spriteList(
-      sprites,
-      stepTime: 1 / 10,
-      loop: true,
-    );
-    position = gameRef.size / 2;
-    add(RectangleHitbox()..debugMode = true);
+    add(RectangleHitbox()..debugMode = false);
     return super.onLoad();
+  }
+
+  void shoot() {
+    AnimBullet bullet = AnimBullet(
+      animation: stoneBullet,
+      maxRange: 200,
+      speed: 200,
+    );
+    bullet.size = Vector2(100, 30);
+    bullet.angle = pi;
+    bullet.priority = 1;
+    bullet.anchor = Anchor.center;
+    priority = 2;
+    bullet.position = position + Vector2(60, 15);
+    game.add(bullet);
+  }
+
+  void move(Vector2 offset) {
+    position = position + offset;
   }
 
   @override

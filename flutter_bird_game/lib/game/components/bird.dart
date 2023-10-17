@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flutter_bird_game/game/components/anim_bullet.dart';
 
 class Bird extends SpriteAnimationComponent with CollisionCallbacks {
   Bird({
@@ -10,7 +11,7 @@ class Bird extends SpriteAnimationComponent with CollisionCallbacks {
 
   @override
   FutureOr<void> onLoad() {
-    add(RectangleHitbox()..debugMode = true);
+    add(RectangleHitbox()..debugMode = false);
     return super.onLoad();
   }
 
@@ -28,7 +29,10 @@ class Bird extends SpriteAnimationComponent with CollisionCallbacks {
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    print('碰撞了鸟');
+    if (other is AnimBullet) {
+      print('鸟死亡');
+      removeFromParent();
+    }
     super.onCollision(intersectionPoints, other);
   }
 }
