@@ -2,7 +2,7 @@ import 'package:flame/game.dart';
 
 class Config {
   ///显示外边框
-  static const bool showOutline = true;
+  static const bool showOutline = false;
 }
 
 Vector2 cornerBumpDistance(Vector2 directionVector, Vector2 pointA, Vector2 pointB) {

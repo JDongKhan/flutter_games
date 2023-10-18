@@ -6,7 +6,8 @@ import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_ext/flame_ext.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_game/config/config.dart';
+import 'package:flutter_game/global/config.dart';
+import 'package:flutter_game/global/data_store.dart';
 import '../bullet/anim_bullet.dart';
 import '../life/liveable.dart';
 import '../player/player.dart';
@@ -42,9 +43,12 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
   }
 
   @override
-  void onDied() {
+  void onDied(int? killer) {
     removeFromParent();
     debugPrint('怪物死亡了');
+    if (killer != null) {
+      DataStore.instance.addScore(killer, attr.score);
+    }
   }
 
   @override
@@ -111,7 +115,7 @@ class Monster extends SpriteAnimationComponent with CollisionCallbacks, Liveable
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
     if (other is AnimBullet && other.type == BulletType.hero) {
-      loss(other.attr);
+      loss(other.attr, other.playerId);
     } else if (other is Wall && intersectionPoints.length == 2) {
       //检测障碍物
       var pointA = intersectionPoints.elementAt(0);

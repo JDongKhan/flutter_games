@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
+import '../component/base_flame_game.dart';
 import '../component/player/player.dart';
 
-mixin PlayerScene on FlameGame {
+mixin PlayerScene on BaseFlameGame {
   ///游戏玩家
   Player? _player;
   Player? get player => _player;
@@ -23,14 +24,15 @@ mixin PlayerScene on FlameGame {
       sprites.add(await loadSprite('adventurer/adventurer-bow-0$i.png'));
     }
     final PlayerAttr heroAttr = PlayerAttr(
-      life: 3000,
+      life: 200,
       speed: 1000,
       bulletSpeed: 500,
-      attackSpeed: 200,
+      attackSpeed: 500,
       attackRange: 500,
       attack: 50,
       crit: 0.75,
       critDamage: 1.5,
+      score: 0,
     );
     SpriteAnimation animation = SpriteAnimation.spriteList(sprites, stepTime: 10 / heroAttr.attackSpeed, loop: false);
     //子弹
@@ -42,6 +44,9 @@ mixin PlayerScene on FlameGame {
       attr: heroAttr,
       spriteAnimation: animation,
       size: Vector2(50, 37),
+      onDead: () {
+        gameOver();
+      },
     );
     world.add(_player!);
     //跟随玩家

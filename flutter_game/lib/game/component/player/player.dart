@@ -2,7 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_game/config/config.dart';
+import 'package:flutter_game/global/config.dart';
 
 import '../body/body.dart';
 import '../bullet/anim_bullet.dart';
@@ -28,6 +28,9 @@ class PlayerAttr {
   // 暴击伤害
   double critDamage;
 
+  ///价值分数
+  int score;
+
   PlayerAttr({
     required this.life,
     required this.speed,
@@ -37,6 +40,7 @@ class PlayerAttr {
     required this.crit,
     required this.critDamage,
     required this.bulletSpeed,
+    required this.score,
   });
 
   PlayerAttr copyWith({
@@ -48,6 +52,7 @@ class PlayerAttr {
     double? attack,
     double? crit,
     double? critDamage,
+    int? score,
   }) {
     return PlayerAttr(
       life: life ?? this.life,
@@ -58,6 +63,7 @@ class PlayerAttr {
       attack: attack ?? this.attack,
       crit: crit ?? this.crit,
       critDamage: critDamage ?? this.critDamage,
+      score: score ?? this.score,
     );
   }
 }
@@ -68,11 +74,17 @@ class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
   late LifeComponent lifeComponent;
   bool isLeft = true;
 
-  //任务
+  ///任务
   late SpriteAnimation bulletAnimation;
 
-  //子弹
+  ///子弹
   final SpriteAnimation spriteAnimation;
+
+  ///死亡回调
+  final Function? onDead;
+
+  ///玩家id
+  late int playerId;
 
   Player({
     required initPosition,
@@ -80,7 +92,10 @@ class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
     required this.spriteAnimation,
     required this.bulletAnimation,
     required Vector2 size,
-  }) : super(size: size, anchor: Anchor.center, position: initPosition);
+    this.onDead,
+  }) : super(size: size, anchor: Anchor.center, position: initPosition) {
+    playerId = DateTime.now().millisecondsSinceEpoch;
+  }
 
   @override
   Future<void> onLoad() async {
@@ -128,6 +143,7 @@ class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
       maxRange: attr.attackRange,
       speed: attr.bulletSpeed,
       isLeft: isLeft,
+      playerId: playerId,
     );
     bullet.size = Vector2(32, 32);
     bullet.anchor = Anchor.center;
@@ -205,6 +221,7 @@ class Player extends PositionComponent with HasGameRef, CollisionCallbacks {
   ) {
     lifeComponent.loss(attr, onDied: () {
       debugPrint('玩家已死亡');
+      onDead?.call();
       removeFromParent();
     });
   }

@@ -15,13 +15,13 @@ class MonsterArea extends PositionComponent with HasGameRef {
 
   final Random _random = Random();
 
-  static Future<List<Monster>> initMonsters(FlameGame game) async {
-    monsters.add(await buildSoldier(game));
+  Future<List<Monster>> _initMonsters(FlameGame game) async {
+    monsters.add(await _buildSoldier(game));
     monsters.add(await buildBoss(game));
     return monsters;
   }
 
-  static Future<Monster> buildSoldier(FlameGame game) async {
+  Future<Monster> _buildSoldier(FlameGame game) async {
     //普通怪物
     const String src2 = 'adventurer/Characters-part-2.png';
     var image = game.images.fromCache(src2);
@@ -29,7 +29,11 @@ class MonsterArea extends PositionComponent with HasGameRef {
     List<Sprite> sprites = stoneSheet.getRowSprites(row: 0, start: 5, count: 4);
     SpriteAnimation animation = SpriteAnimation.spriteList(sprites, stepTime: 1 / 10, loop: true);
     Vector2 monsterSize = Vector2(32, 48);
-    final PlayerAttr heroAttr = PlayerAttr(life: 200, speed: 0, bulletSpeed: 200, attackSpeed: 200, attackRange: 400, attack: 20, crit: 0, critDamage: 1);
+
+    ///分数
+    int score = _random.nextRange(10, 20);
+
+    final PlayerAttr heroAttr = PlayerAttr(life: 200, speed: 0, bulletSpeed: 200, attackSpeed: 200, attackRange: 400, attack: 20, crit: 0, critDamage: 1, score: score);
 
     List<Sprite> sprites2 = [];
     for (int i = 1; i <= 4; i++) {
@@ -42,7 +46,7 @@ class MonsterArea extends PositionComponent with HasGameRef {
     return monster;
   }
 
-  static Future<Monster> buildBoss(FlameGame game) async {
+  Future<Monster> buildBoss(FlameGame game) async {
     const String src = 'adventurer/animatronic.png';
     var image = game.images.fromCache(src);
     SpriteSheet bossSheet = SpriteSheet.fromColumnsAndRows(image: image, columns: 13, rows: 6);
@@ -56,7 +60,8 @@ class MonsterArea extends PositionComponent with HasGameRef {
     SpriteAnimation animation = SpriteAnimation.spriteList(bossSheet.getSprites(), stepTime: 1 / 24, loop: true);
     Vector2 monsterSize = Vector2(64, 64);
 
-    final PlayerAttr heroAttr = PlayerAttr(life: 4000, speed: 100, bulletSpeed: 200, attackSpeed: 200, attackRange: 600, attack: 100, crit: 0.5, critDamage: 1.5);
+    int score = _random.nextRange(20, 40);
+    final PlayerAttr heroAttr = PlayerAttr(life: 400, speed: 100, bulletSpeed: 200, attackSpeed: 200, attackRange: 600, attack: 40, crit: 0.5, critDamage: 1.5, score: score);
     Monster monster = Monster(bulletSize: Vector2(720 / 4, 658 / 4), attr: heroAttr, bulletSprite: bossBullet, animation: animation, size: monsterSize, position: Vector2.zero());
     return monster;
   }
@@ -85,7 +90,7 @@ class MonsterArea extends PositionComponent with HasGameRef {
 
   @override
   Future<void> onLoad() async {
-    await MonsterArea.initMonsters(game);
+    await _initMonsters(game);
 
     ///初始化
     for (int i = 0; i < 5; i++) {

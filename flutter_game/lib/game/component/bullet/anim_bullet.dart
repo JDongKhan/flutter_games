@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flutter_game/config/config.dart';
+import 'package:flutter_game/global/config.dart';
 
 import '../monster/monster.dart';
 import '../player/player.dart';
@@ -16,6 +16,7 @@ class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
   final BulletType type;
   final PlayerAttr attr;
   final bool isLeft;
+  final int? playerId;
 
   AnimBullet({
     required SpriteAnimation animation,
@@ -24,6 +25,7 @@ class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
     required this.speed,
     required this.attr,
     this.isLeft = true,
+    this.playerId,
   }) : super(animation: animation);
 
   @override

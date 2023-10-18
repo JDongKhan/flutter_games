@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:flutter_game/game/component/base_flame_game.dart';
 import 'package:flutter_game/game/game.dart';
+import 'package:flutter_game/global/data_store.dart';
 import 'theme/theme_controller.dart';
 import 'theme/theme_widget.dart';
 
@@ -37,8 +38,13 @@ class GamePage extends StatelessWidget {
               return Menu(game: game);
             },
             PauseMenu.menuId: (context, g) {
-              return PauseMenu(game: game);
+              return GameOverLayer(game: game);
             },
+            GameOverLayer.menuId: (context, g) {
+              return GameOverLayer(
+                game: game,
+              );
+            }
           },
         );
       },
@@ -115,21 +121,26 @@ class _MenuState extends State<Menu> {
   int _score = 0;
   @override
   void initState() {
-    _listenerScore();
+    DataStore.instance.addListener(_listenerScore);
     super.initState();
   }
 
   void _listenerScore() {
+    int s = DataStore.instance.getScore(widget.game.player?.playerId);
     // final ComponentsNotifier<Player> playerNotifier = widget.game.componentsNotifier<Player>();
     // playerNotifier.addListener(() {
     //   Player? player = playerNotifier.single;
     //   _score = player?.score ?? 0;
     //   setState(() {});
     // });
+    setState(() {
+      _score = s;
+    });
   }
 
   @override
   void dispose() {
+    DataStore.instance.removeListener(_listenerScore);
     super.dispose();
   }
 
@@ -150,7 +161,7 @@ class _MenuState extends State<Menu> {
             onPanDown: (detail) {
               widget.game.paused = !widget.game.paused;
               setState(() {
-                widget.game.pausedGameState();
+                widget.game.pauseEngine();
               });
             },
           ),
@@ -159,7 +170,7 @@ class _MenuState extends State<Menu> {
           ),
           Text(
             '$_score',
-            style: const TextStyle(fontSize: 22, color: Colors.black54, decoration: TextDecoration.none),
+            style: const TextStyle(fontSize: 22, color: Colors.white, decoration: TextDecoration.none),
           ),
         ],
       ),
@@ -222,7 +233,68 @@ class _PauseMenuState extends State<PauseMenu> {
   void _restart() {}
 
   void _continue() {
-    widget.game.resumeGameState();
+    widget.game.resumeEngine();
+  }
+
+  void _exit() {
+    exit(0);
+  }
+}
+
+///游戏结束
+class GameOverLayer extends StatefulWidget {
+  static const String menuId = 'GameOver';
+  final JDGame game;
+  const GameOverLayer({
+    super.key,
+    required this.game,
+  });
+
+  @override
+  State<GameOverLayer> createState() => _GameOverLayerState();
+}
+
+class _GameOverLayerState extends State<GameOverLayer> {
+  @override
+  void initState() {
+    _listenerScore();
+    super.initState();
+  }
+
+  void _listenerScore() {}
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Center(
+        child: Container(
+          color: Colors.black54,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Wrap(
+            spacing: 20,
+            direction: Axis.vertical,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              const Text('Game Over', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25)),
+              Text('Score:${DataStore.instance.getScore(widget.game.player?.playerId)}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+              ElevatedButton(onPressed: _restart, child: const Text('重新开始')),
+              ElevatedButton(onPressed: _exit, child: const Text('退出游戏'))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _restart() {
+    widget.game.restart();
   }
 
   void _exit() {

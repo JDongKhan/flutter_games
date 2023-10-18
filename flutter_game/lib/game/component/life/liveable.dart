@@ -32,11 +32,14 @@ mixin Liveable on PositionComponent {
   // 当前血条百分百
   double get _progress => _currentLife / lifePoint;
 
+  ///是否已死亡
+  bool get isDead => _currentLife == 0;
+
   final TextStyle _defaultTextStyle = const TextStyle(fontSize: 10, color: Colors.white);
 
   final Random _random = Random();
 
-  void loss(PlayerAttr attr) {
+  void loss(PlayerAttr attr, int? killer) {
     double point = attr.attack;
     double crit = attr.crit;
     double critDamage = attr.critDamage;
@@ -49,7 +52,7 @@ mixin Liveable on PositionComponent {
     _updateLifeText();
     if (_currentLife <= 0) {
       _currentLife = 0;
-      onDied();
+      onDied(killer);
     }
   }
 
@@ -63,7 +66,7 @@ mixin Liveable on PositionComponent {
     }
   }
 
-  void onDied() {}
+  void onDied(int? killer) {}
 
   late final TextComponent _text;
   final double offsetY = 10; // 血条距构件顶部偏移量

@@ -1,8 +1,7 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flutter/foundation.dart';
 
-import '../../../config/config.dart';
+import '../../../global/config.dart';
 
 ///障碍物
 class Wall extends SpriteAnimationComponent with CollisionCallbacks {
