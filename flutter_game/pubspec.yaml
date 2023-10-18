@@ -47,6 +47,18 @@ dependencies:
     sdk: flutter
   intl: ^0.18.1
 
+
+  #demo 需要
+  dashbook: ^0.1.13
+  flame_forge2d: ^0.15.1
+  flame_isolate: ^0.5.0+2
+  flame_lottie: ^0.3.0+2
+  flame_spine: ^0.1.1+4
+  flame_noise: ^0.1.1+7
+  provider: ^6.0.5
+  flame_svg: ^1.8.4
+  flame_tiled: ^1.15.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -82,6 +94,18 @@ flutter:
     - assets/images/adventurer/skill01/
     - assets/images/adventurer/skill02/
     - assets/audio/
+    - assets/
+    - assets/svgs/
+    - assets/audio/sfx/
+    - assets/audio/music/
+    - assets/fonts/
+    - assets/fonts/ZCOOLKuaiLe/
+    - assets/spine/
+    - assets/tiles/
+    - assets/images/layers/
+    - assets/images/tile_maps/
+    - assets/images/animations/
+    - assets/images/rogue_shooter/
 
 
   fonts:
