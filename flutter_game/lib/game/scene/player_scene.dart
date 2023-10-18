@@ -145,45 +145,13 @@ mixin KeyboardScene on PlayerScene, KeyboardEvents {
     LogicalKeyboardKey.keyD: 0,
   };
   final Vector2 _direction = Vector2.zero();
-  static const int _speed = 200;
-
-  bool _handleKey(LogicalKeyboardKey key, bool isDown) {
-    _keyWeights[key] = isDown ? 1 : 0;
-    return true;
-  }
-
-  double get xInput => _keyWeights[LogicalKeyboardKey.keyD]! - _keyWeights[LogicalKeyboardKey.keyA]!;
-  double get yInput => _keyWeights[LogicalKeyboardKey.keyS]! - _keyWeights[LogicalKeyboardKey.keyW]!;
-
-  @override
-  void onMount() {
-    add(
-      KeyboardListenerComponent(
-        keyUp: {
-          LogicalKeyboardKey.keyA: (keys) => _handleKey(LogicalKeyboardKey.keyA, false),
-          LogicalKeyboardKey.keyD: (keys) => _handleKey(LogicalKeyboardKey.keyD, false),
-          LogicalKeyboardKey.keyW: (keys) => _handleKey(LogicalKeyboardKey.keyW, false),
-          LogicalKeyboardKey.keyS: (keys) => _handleKey(LogicalKeyboardKey.keyS, false),
-        },
-        keyDown: {
-          LogicalKeyboardKey.keyA: (keys) => _handleKey(LogicalKeyboardKey.keyA, true),
-          LogicalKeyboardKey.keyD: (keys) => _handleKey(LogicalKeyboardKey.keyD, true),
-          LogicalKeyboardKey.keyW: (keys) => _handleKey(LogicalKeyboardKey.keyW, true),
-          LogicalKeyboardKey.keyS: (keys) => _handleKey(LogicalKeyboardKey.keyS, true),
-        },
-      ),
-    );
-    super.onMount();
-  }
+  static const double _speed = 200;
 
   @override
   void update(double dt) {
     super.update(dt);
-    _direction
-      ..setValues(xInput, yInput)
-      ..normalize();
-    final displacement = _direction * (_speed * dt);
-    _player?.move(displacement);
+    final displacement = _direction.normalized() * _speed * dt;
+    player?.move(displacement);
   }
 
   ///两种实现方式  这个比较简单
@@ -194,31 +162,24 @@ mixin KeyboardScene on PlayerScene, KeyboardEvents {
   ) {
     final isKeyDown = event is RawKeyDownEvent;
     var player = _player;
-    if (event.logicalKey == LogicalKeyboardKey.keyY && isKeyDown) {
-      player?.flip(y: true);
-    }
-    if (event.logicalKey == LogicalKeyboardKey.keyX && isKeyDown) {
-      player?.flip(x: true);
-    }
 
-    double step = _player?.attr.speed ?? 200;
-    step = step / 60;
-    if ((event.logicalKey == LogicalKeyboardKey.arrowUp || event.logicalKey == LogicalKeyboardKey.keyW) && isKeyDown) {
-      player?.move(Vector2(0, -step));
-    }
-    if ((event.logicalKey == LogicalKeyboardKey.arrowDown || event.logicalKey == LogicalKeyboardKey.keyS) && isKeyDown) {
-      player?.move(Vector2(0, step));
-    }
-    if ((event.logicalKey == LogicalKeyboardKey.arrowLeft || event.logicalKey == LogicalKeyboardKey.keyA) && isKeyDown) {
-      player?.move(Vector2(-step, 0));
-      if (player?.isLeft ?? false) {
-        player?.flip();
-      }
-    }
-    if ((event.logicalKey == LogicalKeyboardKey.arrowRight || event.logicalKey == LogicalKeyboardKey.keyD) && isKeyDown) {
-      player?.move(Vector2(step, 0));
-      if (!(player?.isLeft ?? false)) {
-        player?.flip();
+    // Avoiding repeat event as we are interested only in
+    // key up and key down event.
+    if (!event.repeat) {
+      if (event.logicalKey == LogicalKeyboardKey.keyA) {
+        _direction.x += isKeyDown ? -1 : 1;
+        if (player?.isLeft ?? false) {
+          player?.flip();
+        }
+      } else if (event.logicalKey == LogicalKeyboardKey.keyD) {
+        _direction.x += isKeyDown ? 1 : -1;
+        if (!(player?.isLeft ?? false)) {
+          player?.flip();
+        }
+      } else if (event.logicalKey == LogicalKeyboardKey.keyW) {
+        _direction.y += isKeyDown ? -1 : 1;
+      } else if (event.logicalKey == LogicalKeyboardKey.keyS) {
+        _direction.y += isKeyDown ? 1 : -1;
       }
     }
 
