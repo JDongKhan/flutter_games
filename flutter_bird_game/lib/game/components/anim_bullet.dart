@@ -13,7 +13,8 @@ class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
     required SpriteAnimation animation,
     required this.maxRange,
     required this.speed,
-  }) : super(animation: animation);
+    required Vector2 size,
+  }) : super(animation: animation, size: size);
 
   double _length = 0;
 
@@ -33,11 +34,5 @@ class AnimBullet extends SpriteAnimationComponent with CollisionCallbacks {
       _length = 0;
       removeFromParent();
     }
-  }
-
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    print('碰撞了子弹');
-    super.onCollision(intersectionPoints, other);
   }
 }

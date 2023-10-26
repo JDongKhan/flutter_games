@@ -8,6 +8,9 @@ class Player extends SpriteAnimationComponent with HasGameRef, CollisionCallback
   final SpriteAnimation stoneBullet;
   Player({required SpriteAnimation spriteAnimation, required this.stoneBullet}) : super(animation: spriteAnimation, size: Vector2(200, 100), anchor: Anchor.center);
 
+  ///得分
+  int score = 0;
+
   @override
   Future<void> onLoad() async {
     add(RectangleHitbox()..debugMode = false);
@@ -15,12 +18,7 @@ class Player extends SpriteAnimationComponent with HasGameRef, CollisionCallback
   }
 
   void shoot() {
-    AnimBullet bullet = AnimBullet(
-      animation: stoneBullet,
-      maxRange: 200,
-      speed: 200,
-    );
-    bullet.size = Vector2(100, 30);
+    AnimBullet bullet = AnimBullet(animation: stoneBullet, maxRange: 200, speed: 200, size: Vector2(100, 30));
     bullet.angle = pi;
     bullet.priority = 1;
     bullet.anchor = Anchor.center;
@@ -31,11 +29,6 @@ class Player extends SpriteAnimationComponent with HasGameRef, CollisionCallback
 
   void move(Vector2 offset) {
     position = position + offset;
-  }
-
-  @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    print('碰撞了飞机');
-    super.onCollision(intersectionPoints, other);
+    position = Vector2(position.x.clamp(0, game.size.x), position.y.clamp(0, game.size.y));
   }
 }

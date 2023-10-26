@@ -24,8 +24,7 @@ mixin BirdScene on FlameGame {
 
   Future<Bird> _generateNewBird() async {
     SpriteAnimation animation = await _loadBirdSprite();
-    Bird bird = Bird(animation: animation);
-    bird.size = Vector2(50, 50);
+    Bird bird = Bird(animation: animation, size: Vector2(50, 50));
     double dy = _random.nextInt(size.y.toInt()).toDouble();
     bird.position = Vector2(size.x, dy.toDouble());
     return bird;
